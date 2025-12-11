@@ -16,47 +16,44 @@ class MainWindow(QWidget):
         self.resize(1920, 1080)
 
         self.background_color = QColor(44, 44, 44) #30 35 45 цвет Макса
-        self.bg_image = QPixmap("icons/bg_full.png")
+   
         self.buttons = []
 
 
 
         # создаём несколько тестовых кнопок
-        self.create_button("Добавить лекарство", 0.786, 0.876,"rgba(129, 119, 245, 255)" )  # центр
-        self.create_button("Подобрать лекарство", 0.444, 0.876,"rgba(83,83,87,255)")
+        self.create_button("Добавить лекарство", 0.792, 0.871,"rgba(111, 72, 185, 255)" )  # центр
+        self.create_button("Подобрать лекарство", 0.435, 0.871,"rgba(83,83,87,255)")
 
-        self.create_side_button("  Главное", 0.12, 0.22, "icons/mainMenu.png")
-        self.create_side_button("  Ежедневник", 0.12, 0.34, "icons/diary.png")
-        self.create_side_button("   Настройки", 0.12, 0.46, "icons/settings.png")
-
+        self.create_side_button("  Главное", 0.115, 0.201, "icons/mainMenu.png")
+        self.create_side_button("  Ежедневник", 0.115, 0.286, "icons/diary.png")
+        self.create_side_button("  Настройки", 0.115, 0.372, "icons/settings.png")
 
     def paintEvent(self, event):
         painter = QPainter(self)
-        if not self.bg_image.isNull():
-            scaled = self.bg_image.scaled(self.size(), Qt.KeepAspectRatioByExpanding, Qt.SmoothTransformation)
-            painter.drawPixmap(0, 0, scaled)
-        else:
-            painter.setBrush(QBrush(self.background_color))
-            painter.setPen(Qt.NoPen)
-            painter.drawRect(0, 0, self.width(), self.height())
+
+        # заливаем сплошным фоном
+        painter.fillRect(self.rect(), QColor("#2C2C2C"))
 
         painter.setBrush(QBrush(QColor(255, 255, 255, 40)))
         painter.setPen(QPen(QColor(44, 44, 44, 60), 1))
-        # напоминания
-        painter.drawRoundedRect(543, 356, 789, 444, 16, 16) #радиус 16
-        # календарь
-        painter.drawRoundedRect(1366, 356, 452, 444, 16, 16) #радиус 16
-        # поиск
-        painter.drawRoundedRect(543, 85, 1275, 85,16,16)
+        # напоминания (Rectangle 27)
+        painter.drawRoundedRect(516, 329.86, 684.89, 484.8 , 16, 16)
 
-        # левое окно
-        painter.setBrush(QBrush(QColor(104, 104, 107, 200)))  # сплошной цвет
+        # календарь (Rectangle 34)
+        painter.drawRoundedRect(1247.66, 330.95, 592.34, 483.71, 16, 16)
+
+        # поиск (Frame 19)
+        painter.drawRoundedRect(516, 82, 1324, 95, 16, 16)
+
+        # левый сайдбар (sidebar)
+        painter.drawRect(0, 0, 435, 1080)
+        # сплошной цвет
         painter.setPen(Qt.NoPen)
 
-        painter.drawRect(0, 0, 460, 1212)  # x, y, width, heigh
 
         # теееекст
-        font = QFont(FONT_FAMILY, 24)  # шрифт Arial, размер 16
+        font = QFont(FONT1, 24)  # шрифт Arial, размер 16
         painter.setFont(font)
         painter.setPen(QColor(255, 255, 255))
 
@@ -73,22 +70,6 @@ class MainWindow(QWidget):
         #этот рисователь очень сильно сжимает картинки, лучше чере QLabel. это на будущее
 
 
-    def draw_button_backgrounds(self, painter):
-        """
-        Рисует полупрозрачную "стеклянную" подложку под нижними кнопками.
-        """
-        painter.setPen(Qt.NoPen)
-
-        for btn, _, _ in self.buttons:
-            if btn.text() in ("Добавить лекарство", "Подобрать лекарство"):
-                # прямоугольник чуть больше кнопки
-                rect = btn.geometry().adjusted(-10, -10, 10, 10)
-
-                # "матовое стекло" под кнопкой
-                painter.setBrush(QColor(255, 255, 255, 60))  # прозрачность можно крутить
-                painter.drawRoundedRect(rect, 18, 18)
-
-
 
 
     def create_button(self, text, rel_x, rel_y, color):
@@ -100,7 +81,7 @@ class MainWindow(QWidget):
                 border-radius: 16px;
                 border: 0px solid rgba(58,58,58,255);
                 color: white;
-                font-size: 18px;
+                font-size: 24px;
             }}
             QPushButton:hover {{
                 background-color: rgba(255,255,255,45);
@@ -124,7 +105,7 @@ class MainWindow(QWidget):
         btn.setIconSize(QSize(16, 16))
         btn.resize(300, 90)
 
-        btn.setFont(QFont(FONT_FAMILY,16))
+        btn.setFont(QFont(FONT1,16))
 
         btn.setStyleSheet("""
                     QPushButton {
@@ -134,7 +115,7 @@ class MainWindow(QWidget):
                         color: white;
                         background-color: transparent;
                         border-radius: 8px;
-                        font-size: 16px;
+                        font-size: 22px;
                     }
 
                     QPushButton:hover {
@@ -170,7 +151,7 @@ app = QApplication(sys.argv)
 
 # Регистрируем шрифт
 font_id = QFontDatabase.addApplicationFont("fonts/circled.ttf")
-FONT_FAMILY = QFontDatabase.applicationFontFamilies(font_id)[0]
+FONT1 = QFontDatabase.applicationFontFamilies(font_id)[0]
 
 window = MainWindow()
 window.show()
