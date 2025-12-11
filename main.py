@@ -22,7 +22,7 @@ class MainWindow(QWidget):
 
 
         # создаём несколько тестовых кнопок
-        self.create_button("Добавить лекарство", 0.792, 0.871,"rgba(111, 72, 185, 255)" )  # центр
+        self.create_button("Добавить лекарство", 0.792, 0.871,"rgba(107, 80, 156, 255)" )  # центр
         self.create_button("Подобрать лекарство", 0.435, 0.871,"rgba(83,83,87,255)")
 
         self.create_side_button("  Главное", 0.115, 0.201, "icons/mainMenu.png")
@@ -59,14 +59,14 @@ class MainWindow(QWidget):
 
 
         def textWithIcon(x,y,text,path_of_icon, scale):
-            padding = 50
+            padding = 15
             icon = QPixmap(path_of_icon).scaled(scale, scale, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             painter.drawPixmap(x, y - scale, icon)
             painter.drawText(x + scale + padding, y, text)
 
-        textWithIcon(75,100, "Micro Doser", "icons/pils.png", 70)
-        textWithIcon(594,315,"Напоминания","icons/notification.png", 30)
-        textWithIcon(1419, 315,"Календарь","icons/calendar.png",30)
+        textWithIcon(75,100, "Micro Doser", "icons/pils.png", 40)
+        textWithIcon(516,295,"Напоминания","icons/notification.png", 30)
+        textWithIcon(1253, 295,"Календарь","icons/calendar.png",30)
         #этот рисователь очень сильно сжимает картинки, лучше чере QLabel. это на будущее
 
 
