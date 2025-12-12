@@ -1,53 +1,54 @@
-from PySide6.QtWidgets import QWidget, QLineEdit
+from PySide6.QtWidgets import QWidget, QLineEdit, QStackedWidget
 from PySide6.QtGui import QPainter, QColor, QBrush, QPen, QFont, QPixmap
 from PySide6.QtCore import Qt
 
+# Кнопки / элементы интерфейса
 from buttons.sidebar import create_sidebar_buttons
 from buttons.bottom_bar import create_bottom_buttons
 from buttons.calendar_nav import create_calendar_nav_buttons
 from buttons.search_button import create_search_button
+
+# Экраны
+from screens.home.home_screen import HomeScreen
+from screens.diary.diary_screen import DiaryScreen
+from screens.settings.settings_screen import SettingsScreen
 
 
 class MainWindow(QWidget):
     def __init__(self, font_circled: str, font_semibold: str):
         super().__init__()
 
-        #шрифты
         self.font_circled = font_circled
         self.font_semibold = font_semibold
 
         self.setWindowTitle("Micro Doser")
         self.resize(1920, 1080)
 
-        # Нижние кнопки  semibold
+        # === ПРАВАЯ ЧАСТЬ: ТОЛЬКО СТЕК ЭКРАНОВ ===
+        self.stacked = QStackedWidget(self)
+        self.stacked.setGeometry(516, 200, 1320, 780)
+
+        self.page_home = HomeScreen(self.font_circled, self.font_semibold)
+        self.page_diary = DiaryScreen(self.font_circled, self.font_semibold)
+        self.page_settings = SettingsScreen(self.font_semibold, self.font_circled)
+
+        self.stacked.addWidget(self.page_home)      # index 0
+        self.stacked.addWidget(self.page_diary)     # index 1
+        self.stacked.addWidget(self.page_settings)  # index 2
+
+        # === ЭЛЕМЕНТЫ "ГЛАВНОЙ" (они должны исчезать на других экранах) ===
+
+        # Нижние кнопки
         self.btn_add_medicine, self.btn_pick_medicine = create_bottom_buttons(
-            self,
-            self.font_semibold,
-        )
-        # Сайдбар circled
-        (
-            self.btn_home,
-            self.btn_diary,
-            self.btn_settings,
-        ) = create_sidebar_buttons(
-            self,
-            self.font_circled,
-            on_home=self.show_home,
-            on_diary=self.show_diary,
-            on_settings=self.show_settings,
+            self, self.font_semibold
         )
 
-        # Календарная навигация
-        (
-            self.prev_month_btn,
-            self.next_month_btn,
-        ) = create_calendar_nav_buttons(
-            self,
-            on_prev=self.on_prev_month,
-            on_next=self.on_next_month,
+        # Календарная навигация (стрелки)
+        self.prev_month_btn, self.next_month_btn = create_calendar_nav_buttons(
+            self, on_prev=self.on_prev_month, on_next=self.on_next_month
         )
 
-        #поиск
+        # Поиск
         self.search_input = QLineEdit(self)
         self.search_input.setPlaceholderText("Поиск")
         self.search_input.resize(1200, 60)
@@ -61,47 +62,49 @@ class MainWindow(QWidget):
                 font-size: 24px;
                 font-family: '{self.font_circled}';
             }}
-        """
+            """
         )
         self.search_input.move(530, 99)
 
         self.search_button = create_search_button(self, self.on_search_clicked)
 
-    #рисовка
+        # === SIDEBAR (всегда на месте) ===
+        self.btn_home, self.btn_diary, self.btn_settings = create_sidebar_buttons(
+            self,
+            self.font_circled,
+            on_home=self.show_home,
+            on_diary=self.show_diary,
+            on_settings=self.show_settings,
+        )
 
+        # стартуем с главной
+        self.show_home()
+
+    # ====== РИСОВКА ТОЛЬКО ЛЕВОЙ ЧАСТИ + ОБЩИЙ ФОН + ПОЛЕ ПОИСКА ======
     def paintEvent(self, event):
         painter = QPainter(self)
 
-        # Фон
+        # общий фон
         painter.fillRect(self.rect(), QColor("#2C2C2C"))
 
-        #блоки напоминания и календаря
-        painter.setBrush(QBrush(QColor(255, 255, 255, 40)))
-        painter.setPen(QPen(QColor(44, 44, 44, 60), 1))
-
-        painter.drawRoundedRect(516, 329.86, 684.89, 484.8, 16, 16)
-        painter.drawRoundedRect(1247.66, 330.95, 592.34, 483.71, 16, 16)
-        painter.drawRoundedRect(516, 82, 1324, 95, 16, 16)
-
+        # левый сайдбар-блок
+        painter.setBrush(QBrush(QColor(75, 75, 75)))
+        painter.setPen(Qt.NoPen)
         painter.drawRect(0, 0, 435, self.height())
 
+        # блок поиска сверху (общий, но мы его будем прятать на других экранах)
+        painter.setBrush(QBrush(QColor(255, 255, 255, 40)))
+        painter.setPen(QPen(QColor(44, 44, 44, 60), 1))
+        if self.stacked.currentWidget() == self.page_home:
+            painter.drawRoundedRect(516, 82, 1324, 95, 16, 16)
+
+        # заголовок слева "Micro Doser"
         painter.setPen(QColor(255, 255, 255))
 
-        def text_with_icon(
-            x,
-            y,
-            text,
-            icon_path,
-            scale,
-            icon_offset_y=2,
-            text_offset_y=0,
-        ):
+        def text_with_icon(x, y, text, icon_path, scale, icon_offset_y=2, text_offset_y=0):
             padding = 15
             icon = QPixmap(icon_path).scaled(
-                scale,
-                scale,
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation,
+                scale, scale, Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
             painter.drawPixmap(x, y - scale + icon_offset_y, icon)
             painter.drawText(x + scale + padding, y + text_offset_y, text)
@@ -111,35 +114,20 @@ class MainWindow(QWidget):
         painter.setFont(font_title)
 
         text_with_icon(
-            67,
-            100,
-            "Micro Doser",
-            "icons/pils.png",
-            40,
-            icon_offset_y=6,
+            67, 100, "Micro Doser", "icons/pils.png", 40, icon_offset_y=6
         )
 
-        # Напоминания / Календарь
-        font_section = QFont(self.font_circled, 25)
-        painter.setFont(font_section)
+    # ====== УТИЛИТА: показывать/прятать элементы главной ======
+    def _set_home_ui_visible(self, visible: bool):
+        self.search_input.setVisible(visible)
+        self.search_button.setVisible(visible)
+        self.prev_month_btn.setVisible(visible)
+        self.next_month_btn.setVisible(visible)
+        self.btn_add_medicine.setVisible(visible)
+        self.btn_pick_medicine.setVisible(visible)
+        self.update()
 
-        text_with_icon(
-            516,
-            295,
-            "Напоминания",
-            "icons/notification.png",
-            30,
-        )
-
-        text_with_icon(
-            1253,
-            295,
-            "Календарь",
-            "icons/calendar.png",
-            30,
-        )
-
-
+    # ====== handlers ======
     def on_search_clicked(self):
         print("Ищем по:", self.search_input.text())
 
@@ -149,11 +137,15 @@ class MainWindow(QWidget):
     def on_next_month(self):
         print("Вперёд по календарю")
 
+    # ====== ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ (sidebar остаётся) ======
     def show_home(self):
-        print("Открыта главная страница")
+        self._set_home_ui_visible(True)
+        self.stacked.setCurrentWidget(self.page_home)
 
     def show_diary(self):
-        print("Открыт ежедневник")
+        self._set_home_ui_visible(False)
+        self.stacked.setCurrentWidget(self.page_diary)
 
     def show_settings(self):
-        print("Открыты настройки")
+        self._set_home_ui_visible(False)
+        self.stacked.setCurrentWidget(self.page_settings)
