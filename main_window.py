@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QWidget, QLineEdit, QStackedWidget
 from PySide6.QtGui import QPainter, QColor, QBrush, QPen, QFont, QPixmap
 from PySide6.QtCore import Qt
+from screens.diary.diary_screen import DiaryScreen
 
 # Кнопки / элементы интерфейса
 from buttons.sidebar import create_sidebar_buttons
@@ -35,6 +36,8 @@ class MainWindow(QWidget):
         self.page_home = HomeScreen(self.font_circled, self.font_semibold)
         self.page_diary = DiaryScreen(self.font_circled, self.font_semibold)
         self.page_settings = SettingsScreen(self.font_semibold, self.font_circled)
+        self.page_diary = DiaryScreen(self.font_semibold, self.font_circled)
+        self.stacked.addWidget(self.page_diary)
 
         self.stacked.addWidget(self.page_home)      # index 0
         self.stacked.addWidget(self.page_diary)     # index 1
@@ -162,11 +165,12 @@ class MainWindow(QWidget):
         print("Ищем по:", self.search_input.text())
 
     def on_prev_month(self):
-        print("Назад по календарю")
+        if self.stacked.currentWidget() == self.page_home:
+            self.page_home.prev_month()
 
     def on_next_month(self):
-        print("Вперёд по календарю")
-
+        if self.stacked.currentWidget() == self.page_home:
+            self.page_home.next_month()
 
     def show_home(self):
         self._set_home_ui_visible(True)
