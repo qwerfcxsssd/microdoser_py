@@ -1,7 +1,8 @@
 from PySide6.QtWidgets import QWidget, QLineEdit, QStackedWidget
 from PySide6.QtGui import QPainter, QColor, QBrush, QPen, QFont, QPixmap
 from PySide6.QtCore import Qt
-from screens.diary.diary_screen import DiaryScreen
+from buttons.calendar import Calendar
+
 
 # Кнопки / элементы интерфейса
 from buttons.sidebar import create_sidebar_buttons
@@ -37,6 +38,13 @@ class MainWindow(QWidget):
         self.page_diary = DiaryScreen(self.font_circled, self.font_semibold)
         self.page_settings = SettingsScreen(self.font_semibold, self.font_circled)
         self.page_diary = DiaryScreen(self.font_semibold, self.font_circled)
+
+        self.calendar = Calendar(self)
+        self.calendar.setGeometry(1248, 270, 590, 482)
+        self.calendar.setVisible(False)
+
+
+
         self.stacked.addWidget(self.page_diary)
 
         self.stacked.addWidget(self.page_home)      # index 0
@@ -55,10 +63,9 @@ class MainWindow(QWidget):
 
         # Календарная навигация (стрелки)
         self.prev_month_btn, self.next_month_btn = create_calendar_nav_buttons(
-            self, on_prev=self.on_prev_month, on_next=self.on_next_month
+            self, on_prev=self.calendar.prev_month, on_next=self.calendar.next_month
         )
 
-        # Поиск
         self.search_input = QLineEdit(self)
         self.search_input.setPlaceholderText("Поиск")
         self.search_input.resize(1200, 60)
@@ -158,6 +165,7 @@ class MainWindow(QWidget):
         self.next_month_btn.setVisible(visible)
         self.btn_add_medicine.setVisible(visible)
         self.btn_pick_medicine.setVisible(visible)
+        self.calendar.setVisible(visible)
         self.update()
 
 

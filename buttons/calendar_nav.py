@@ -40,4 +40,7 @@ def create_calendar_nav_buttons(parent, on_prev=None, on_next=None):
     if on_next:
         btn_next.clicked.connect(on_next)
 
+
+
+
     return btn_prev, btn_next

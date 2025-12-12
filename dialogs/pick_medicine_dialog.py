@@ -102,6 +102,8 @@ class PickMedicineDialog(QDialog):
         add_btn = QPushButton("Добавить")
         add_btn.setFixedSize(160, 56)
         add_btn.setStyleSheet("background-color: rgba(131,123,228,255);")
+        add_btn.clicked.connect(self.accept)
+
 
         cancel_btn = QPushButton("Отмена")
         cancel_btn.setFixedSize(190, 56)

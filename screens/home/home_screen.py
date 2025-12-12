@@ -2,7 +2,6 @@ from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QPainter, QColor, QBrush, QPen, QFont, QPixmap
 from PySide6.QtCore import Qt
 
-
 class HomeScreen(QWidget):
     def __init__(self, font_circled: str, font_semibold: str):
         super().__init__()
