@@ -12,7 +12,7 @@ class Calendar(QWidget):
         self.init_ui()
 
     def init_ui(self):
-        self.setMinimumSize(400, 300)
+        self.setMinimumSize(400, 400)
 
         # Главный layout
         main_layout = QVBoxLayout(self)
@@ -58,15 +58,13 @@ class Calendar(QWidget):
             label = QLabel(day)
             label.setAlignment(Qt.AlignCenter)
             label.setFont(QFont("Arial", 12, QFont.Bold))
-            if i >= 5:  # Суббота и воскресенье
-                label.setStyleSheet("color: red;")
             days_layout.addWidget(label, 0, i)
 
         main_layout.addLayout(days_layout)
 
         # Сетка с днями месяца
         self.days_grid = QGridLayout()
-        self.days_grid.setSpacing(5)
+        self.days_grid.setSpacing(20)
         main_layout.addLayout(self.days_grid)
 
         # Обновляем отображение
@@ -95,8 +93,22 @@ class Calendar(QWidget):
             for col, day in enumerate(week):
                 if day != 0:
                     day_btn = QPushButton(str(day))
-                    day_btn.setFixedSize(40, 40)
+                    day_btn.setFixedSize(40,40)
                     day_btn.setCursor(Qt.PointingHandCursor)
+
+                    day_btn.setStyleSheet("""
+                                                
+                                                QPushButton {
+                                                    background-color: rgba(107, 80, 156, 255);
+                                                    border-radius: 5px;
+                                                    color: rgba(240,240,240,210);
+                                                    
+                                                }
+                                                QPushButton:hover {
+                                                    background-color: #e9ecef;
+                                                }
+                                                
+                                            """)
 
                     # Помечаем текущий день
                     if (day == QDate.currentDate().day() and
@@ -113,30 +125,8 @@ class Calendar(QWidget):
                                 background-color: #45a049;
                             }
                         """)
-                    # Помечаем выходные
-                    elif col >= 5:
-                        day_btn.setStyleSheet("""
-                            QPushButton {
-                                background-color: #f8f9fa;
-                                color: red;
-                                border: 1px solid #dee2e6;
-                                border-radius: 5px;
-                            }
-                            QPushButton:hover {
-                                background-color: #e9ecef;
-                            }
-                        """)
-                    else:
-                        day_btn.setStyleSheet("""
-                            QPushButton {
-                                background-color: #f8f9fa;
-                                border: 1px solid #dee2e6;
-                                border-radius: 5px;
-                            }
-                            QPushButton:hover {
-                                background-color: #e9ecef;
-                            }
-                        """)
+
+
 
                     # Подключаем клик
                     day_btn.clicked.connect(lambda checked, d=day: self.day_clicked(d))

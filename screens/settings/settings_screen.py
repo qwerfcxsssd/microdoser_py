@@ -140,13 +140,14 @@ class SettingsScreen(QWidget):
         self.row_y0 = 110
         self.row_gap = 28
 
-        self.row_signup = SettingsRow(self, "Зарегистрироваться", self.font_buttons)
-        self.row_login  = SettingsRow(self, "Войти", self.font_buttons)
+        #self.row_signup = SettingsRow(self, "Зарегистрироваться", self.font_buttons)
+        #self.row_login  = SettingsRow(self, "Войти", self.font_buttons)
         self.row_lang   = SettingsRow(self, "Сменить язык", self.font_buttons)
         self.row_kids   = SettingsRow(self, "Детский режим", self.font_buttons, with_switch=True)
-        self.row_logout = SettingsRow(self, "Выйти из аккаунта", self.font_buttons)
+        #self.row_logout = SettingsRow(self, "Выйти из аккаунта", self.font_buttons)
 
-        rows = [self.row_signup, self.row_login, self.row_lang, self.row_kids, self.row_logout]
+        rows = [self.row_lang, self.row_kids,#self.row_signup, self.row_login,  self.row_logout
+                ]
 
         y = self.row_y0
         for r in rows:
