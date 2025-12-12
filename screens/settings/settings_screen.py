@@ -110,24 +110,19 @@ class SettingsScreen(QWidget):
         self.row_y0 = 80
         self.row_gap = 28
 
-        self.row_signup = SettingsRow(self, "Зарегистрироваться", self.font_buttons)
-        self.row_login  = SettingsRow(self, "Войти", self.font_buttons)
-        self.row_lang   = SettingsRow(self, "Сменить язык", self.font_buttons)
-        self.row_kids   = SettingsRow(self, "Детский режим", self.font_buttons, with_switch=True)
-        self.row_logout = SettingsRow(self, "Выйти из аккаунта", self.font_buttons)
+        self.row_lang = SettingsRow(self, "Сменить язык", self.font_buttons)
+        self.row_kids = SettingsRow(self, "Детский режим", self.font_buttons, with_switch=True)
 
         rows = [
-            self.row_signup,
-            self.row_login,
             self.row_lang,
-            self.row_kids,
-            self.row_logout
+            self.row_kids
         ]
 
         y = self.row_y0
         for r in rows:
             r.move(self.row_x, y)
             y += r.height() + self.row_gap
+
 
     def paintEvent(self, event):
         p = QPainter(self)
@@ -140,3 +135,6 @@ class SettingsScreen(QWidget):
         title_font.setWeight(QFont.Weight.DemiBold)
         p.setFont(title_font)
         p.drawText(self.margin_left, self.title_y, "Настройки")
+
+
+
