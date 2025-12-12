@@ -6,7 +6,7 @@ from PySide6.QtGui import QFont
 from PySide6.QtCore import Qt
 
 
-class PickMedicineDialog(QDialog):
+class AddMedicineDialog(QDialog):
     def __init__(self, font_title: str, font_text: str, parent=None):
         super().__init__(parent)
 
@@ -14,7 +14,7 @@ class PickMedicineDialog(QDialog):
         self.font_text = font_text
 
         self.setModal(True)
-        self.setWindowTitle("Подобрать лекарство")
+        self.setWindowTitle("Добавить лекарство")
         self.setFixedSize(1300, 760)
 
         self.setStyleSheet(f"""
@@ -59,39 +59,42 @@ class PickMedicineDialog(QDialog):
         root.setContentsMargins(28, 22, 28, 24)
         root.setSpacing(18)
 
-        title = QLabel("Подобрать лекарство")
+
+        title = QLabel("Добавить лекарство")
         title_font = QFont(self.font_title, 26)
         title_font.setWeight(QFont.Weight.DemiBold)
         title.setFont(title_font)
         root.addWidget(title)
 
 
-        lbl1 = QLabel("Введите свои симптомы")
+        lbl1 = QLabel("Введите название лекарства и дозировку в мг")
         lbl1.setFont(QFont(self.font_text, 14))
         root.addWidget(lbl1)
 
-        search_panel, self.search = self._make_line_panel(
-            "Например: головная боль, температура",
+        name_panel, self.name_dose = self._make_line_panel(
+            "Например: Ибупрофен 200 мг",
             height=70
         )
-        root.addWidget(search_panel)
+        root.addWidget(name_panel)
 
-        lbl2 = QLabel("Результат подбора:")
+
+        lbl2 = QLabel("Информация о лекарстве:")
         lbl2.setFont(QFont(self.font_text, 14))
         root.addWidget(lbl2)
 
-        result_panel, self.result = self._make_text_panel(
-            "Здесь появится информация о подходящем лекарстве",
+        info_panel, self.info = self._make_text_panel(
+            "Например: как принимать, курс, противопоказания…",
             height=380
         )
-        root.addWidget(result_panel)
+        root.addWidget(info_panel)
 
         root.addStretch()
+
 
         bottom = QHBoxLayout()
 
         bottom_label = QLabel("Добавить это лекарство?")
-        bottom_font = QFont(self.font_text, 15)
+        bottom_font = QFont(self.font_text, 15)   # ← меньше
         bottom_font.setWeight(QFont.Weight.DemiBold)
         bottom_label.setFont(bottom_font)
         bottom_label.setStyleSheet("color: rgba(240,240,240,210);")
@@ -99,17 +102,18 @@ class PickMedicineDialog(QDialog):
         bottom.addWidget(bottom_label)
         bottom.addStretch()
 
-        add_btn = QPushButton("Добавить")
-        add_btn.setFixedSize(160, 56)
-        add_btn.setStyleSheet("background-color: rgba(131,123,228,255);")
+        ok = QPushButton("Принять")
+        ok.setFixedSize(160, 56)
+        ok.setStyleSheet("background-color: rgba(131,123,228,255);")
+        ok.clicked.connect(self.accept)
 
-        cancel_btn = QPushButton("Отмена")
-        cancel_btn.setFixedSize(190, 56)
-        cancel_btn.setStyleSheet("background-color: rgba(120,120,120,210);")
-        cancel_btn.clicked.connect(self.reject)
+        cancel = QPushButton("Отказаться")
+        cancel.setFixedSize(190, 56)
+        cancel.setStyleSheet("background-color: rgba(120,120,120,210);")
+        cancel.clicked.connect(self.reject)
 
-        bottom.addWidget(add_btn)
-        bottom.addWidget(cancel_btn)
+        bottom.addWidget(ok)
+        bottom.addWidget(cancel)
         root.addLayout(bottom)
 
 

@@ -15,6 +15,8 @@ from screens.settings.settings_screen import SettingsScreen
 
 # Диалоги
 from dialogs.pick_medicine_dialog import PickMedicineDialog
+from dialogs.add_medicine_dialog import AddMedicineDialog
+
 
 
 class MainWindow(QWidget):
@@ -27,7 +29,6 @@ class MainWindow(QWidget):
         self.setWindowTitle("Micro Doser")
         self.resize(1920, 1080)
 
-        # === ПРАВАЯ ЧАСТЬ: ТОЛЬКО СТЕК ЭКРАНОВ ===
         self.stacked = QStackedWidget(self)
         self.stacked.setGeometry(516, 200, 1320, 780)
 
@@ -39,15 +40,15 @@ class MainWindow(QWidget):
         self.stacked.addWidget(self.page_diary)     # index 1
         self.stacked.addWidget(self.page_settings)  # index 2
 
-        # === ЭЛЕМЕНТЫ "ГЛАВНОЙ" (они должны исчезать на других экранах) ===
 
         # Нижние кнопки
         self.btn_add_medicine, self.btn_pick_medicine = create_bottom_buttons(
             self, self.font_semibold
         )
 
-        # ВАЖНО: открываем диалог "Подобрать лекарства"
+        #  открываем диалог "Подобрать лекарства"
         self.btn_pick_medicine.clicked.connect(self.open_pick_medicine_dialog)
+        self.btn_add_medicine.clicked.connect(self.open_add_medicine_dialog)
 
         # Календарная навигация (стрелки)
         self.prev_month_btn, self.next_month_btn = create_calendar_nav_buttons(
@@ -74,7 +75,7 @@ class MainWindow(QWidget):
 
         self.search_button = create_search_button(self, self.on_search_clicked)
 
-        # === SIDEBAR (всегда на месте) ===
+
         self.btn_home, self.btn_diary, self.btn_settings = create_sidebar_buttons(
             self,
             self.font_circled,
@@ -86,7 +87,6 @@ class MainWindow(QWidget):
         # стартуем с главной
         self.show_home()
 
-    # ====== ДИАЛОГ "Подобрать лекарства" ======
     def open_pick_medicine_dialog(self):
         dlg = PickMedicineDialog(
             font_title=self.font_semibold,
@@ -102,7 +102,16 @@ class MainWindow(QWidget):
             print("Пользователь ввёл:", user_text)
             print("Рекомендации:", rec_text)
 
-    # ====== РИСОВКА ТОЛЬКО ЛЕВОЙ ЧАСТИ + ОБЩИЙ ФОН + ПОЛЕ ПОИСКА ======
+    def open_add_medicine_dialog(self):
+        dlg = AddMedicineDialog(
+            font_title=self.font_semibold,
+            font_text=self.font_circled,
+            parent=self
+        )
+        if dlg.exec() == dlg.Accepted:
+            print("Добавить:", dlg.get_name_dose())
+            print("Инфо:", dlg.get_info())
+
     def paintEvent(self, event):
         painter = QPainter(self)
 
@@ -139,7 +148,6 @@ class MainWindow(QWidget):
             67, 100, "Micro Doser", "icons/pils.png", 40, icon_offset_y=6
         )
 
-    # ====== УТИЛИТА: показывать/прятать элементы главной ======
     def _set_home_ui_visible(self, visible: bool):
         self.search_input.setVisible(visible)
         self.search_button.setVisible(visible)
@@ -149,7 +157,7 @@ class MainWindow(QWidget):
         self.btn_pick_medicine.setVisible(visible)
         self.update()
 
-    # ====== handlers ======
+
     def on_search_clicked(self):
         print("Ищем по:", self.search_input.text())
 
@@ -159,7 +167,7 @@ class MainWindow(QWidget):
     def on_next_month(self):
         print("Вперёд по календарю")
 
-    # ====== ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ (sidebar остаётся) ======
+
     def show_home(self):
         self._set_home_ui_visible(True)
         self.stacked.setCurrentWidget(self.page_home)
