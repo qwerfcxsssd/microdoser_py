@@ -18,7 +18,6 @@ class HomeScreen(QWidget):
         painter.setBrush(QBrush(QColor(255, 255, 255, 40)))
         painter.setPen(QPen(QColor(44, 44, 44, 60), 1))
 
-        # ВАЖНО: тут координаты УЖЕ относительные (0,0) = начало области stacked (516,200)
         painter.drawRoundedRect(0, 130, 685, 485, 16, 16)     # Напоминания
         painter.drawRoundedRect(732, 131, 592, 484, 16, 16)   # Календарь
 
