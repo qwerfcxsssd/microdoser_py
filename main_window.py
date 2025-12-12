@@ -13,6 +13,9 @@ from screens.home.home_screen import HomeScreen
 from screens.diary.diary_screen import DiaryScreen
 from screens.settings.settings_screen import SettingsScreen
 
+# Диалоги
+from dialogs.pick_medicine_dialog import PickMedicineDialog
+
 
 class MainWindow(QWidget):
     def __init__(self, font_circled: str, font_semibold: str):
@@ -42,6 +45,9 @@ class MainWindow(QWidget):
         self.btn_add_medicine, self.btn_pick_medicine = create_bottom_buttons(
             self, self.font_semibold
         )
+
+        # ВАЖНО: открываем диалог "Подобрать лекарства"
+        self.btn_pick_medicine.clicked.connect(self.open_pick_medicine_dialog)
 
         # Календарная навигация (стрелки)
         self.prev_month_btn, self.next_month_btn = create_calendar_nav_buttons(
@@ -79,6 +85,22 @@ class MainWindow(QWidget):
 
         # стартуем с главной
         self.show_home()
+
+    # ====== ДИАЛОГ "Подобрать лекарства" ======
+    def open_pick_medicine_dialog(self):
+        dlg = PickMedicineDialog(
+            font_title=self.font_semibold,
+            font_text=self.font_circled,
+            parent=self
+        )
+
+        if dlg.exec() == dlg.Accepted:
+            user_text = dlg.get_user_text()
+            rec_text = dlg.get_recommendations_text()
+
+            # пока просто вывод, дальше подключим сохранение/добавление в список приёма
+            print("Пользователь ввёл:", user_text)
+            print("Рекомендации:", rec_text)
 
     # ====== РИСОВКА ТОЛЬКО ЛЕВОЙ ЧАСТИ + ОБЩИЙ ФОН + ПОЛЕ ПОИСКА ======
     def paintEvent(self, event):
