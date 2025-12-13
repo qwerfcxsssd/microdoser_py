@@ -11,14 +11,14 @@ class HomeScreen(QWidget):
     def paintEvent(self, event):
         painter = QPainter(self)
 
-        # фон страницы справа (чтобы не было прозрачности)
+        # фон страницы справа
         painter.fillRect(self.rect(), QColor(0, 0, 0, 0))
 
         painter.setBrush(QBrush(QColor(255, 255, 255, 40)))
         painter.setPen(QPen(QColor(44, 44, 44, 60), 1))
 
         painter.drawRoundedRect(0, 130, 685, 485, 16, 16)     # Напоминания
-        painter.drawRoundedRect(732, 131, 592, 484, 16, 16)   # Календарь
+  # Календарь
 
         painter.setPen(QColor(255, 255, 255))
 

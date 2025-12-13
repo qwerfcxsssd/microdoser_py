@@ -1,8 +1,8 @@
-from PySide6.QtWidgets import QWidget, QLineEdit, QStackedWidget
+from PySide6.QtWidgets import QWidget, QLineEdit, QStackedWidget, QLabel
 from PySide6.QtGui import QPainter, QColor, QBrush, QPen, QFont, QPixmap
 from PySide6.QtCore import Qt
-from buttons.calendar import Calendar
 
+from buttons.calendar import Calendar
 
 # Кнопки / элементы интерфейса
 from buttons.sidebar import create_sidebar_buttons
@@ -20,7 +20,6 @@ from dialogs.pick_medicine_dialog import PickMedicineDialog
 from dialogs.add_medicine_dialog import AddMedicineDialog
 
 
-
 class MainWindow(QWidget):
     def __init__(self, font_circled: str, font_semibold: str):
         super().__init__()
@@ -35,35 +34,53 @@ class MainWindow(QWidget):
         self.stacked.setGeometry(516, 200, 1320, 780)
 
         self.page_home = HomeScreen(self.font_circled, self.font_semibold)
-        self.page_diary = DiaryScreen(self.font_circled, self.font_semibold)
         self.page_settings = SettingsScreen(self.font_semibold, self.font_circled)
         self.page_diary = DiaryScreen(self.font_semibold, self.font_circled)
-
-        self.calendar = Calendar(self)
-        self.calendar.setGeometry(1248, 270, 590, 482)
-        self.calendar.setVisible(False)
-
-
-
-        self.stacked.addWidget(self.page_diary)
 
         self.stacked.addWidget(self.page_home)      # index 0
         self.stacked.addWidget(self.page_diary)     # index 1
         self.stacked.addWidget(self.page_settings)  # index 2
 
+        # Календарь (плашка)
+        self.calendar = Calendar(
+            self.page_home,
+            font_text=self.font_circled,
+            font_semibold=self.font_semibold
+        )
+
+        self.calendar.move(730, 130)# внутри HomeScreen
+        self.calendar.setVisible(False)
+
+        # Плашка месяца рядом с календарм
+        self.month_out = QLabel(self.page_home)
+        self.month_out.setText(self.calendar.month_text())
+        self.month_out.setStyleSheet("""
+            QLabel {
+                background-color: rgba(255,255,255,160);
+                color: rgba(25,25,25,230);
+                border-radius: 18px;
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+        """)
+        f = QFont(self.font_circled, 14)
+        f.setWeight(QFont.Weight.DemiBold)
+        self.month_out.setFont(f)
+        self.month_out.setFixedHeight(42)
+        self.month_out.adjustSize()
+        self.month_out.move(1015, 64)
+        self.month_out.setVisible(False)
 
         # Нижние кнопки
         self.btn_add_medicine, self.btn_pick_medicine = create_bottom_buttons(
             self, self.font_semibold
         )
-
-        #  открываем диалог "Подобрать лекарства"
         self.btn_pick_medicine.clicked.connect(self.open_pick_medicine_dialog)
         self.btn_add_medicine.clicked.connect(self.open_add_medicine_dialog)
 
-        # Календарная навигация (стрелки)
+        # Стрелки календаря
         self.prev_month_btn, self.next_month_btn = create_calendar_nav_buttons(
-            self, on_prev=self.calendar.prev_month, on_next=self.calendar.next_month
+            self, on_prev=self.on_prev_month_clicked, on_next=self.on_next_month_clicked
         )
 
         self.search_input = QLineEdit(self)
@@ -85,7 +102,6 @@ class MainWindow(QWidget):
 
         self.search_button = create_search_button(self, self.on_search_clicked)
 
-
         self.btn_home, self.btn_diary, self.btn_settings = create_sidebar_buttons(
             self,
             self.font_circled,
@@ -94,8 +110,19 @@ class MainWindow(QWidget):
             on_settings=self.show_settings,
         )
 
-        # стартуем с главной
         self.show_home()
+
+    def _refresh_month_out(self):
+        self.month_out.setText(self.calendar.month_text())
+        self.month_out.adjustSize()
+
+    def on_prev_month_clicked(self):
+        self.calendar.prev_month()
+        self._refresh_month_out()
+
+    def on_next_month_clicked(self):
+        self.calendar.next_month()
+        self._refresh_month_out()
 
     def open_pick_medicine_dialog(self):
         dlg = PickMedicineDialog(
@@ -103,14 +130,9 @@ class MainWindow(QWidget):
             font_text=self.font_circled,
             parent=self
         )
-
         if dlg.exec() == dlg.Accepted:
-            user_text = dlg.get_user_text()
-            rec_text = dlg.get_recommendations_text()
-
-            # пока просто вывод, дальше подключим сохранение/добавление в список приёма
-            print("Пользователь ввёл:", user_text)
-            print("Рекомендации:", rec_text)
+            print("Пользователь ввёл:", dlg.get_user_text())
+            print("Рекомендации:", dlg.get_recommendations_text())
 
     def open_add_medicine_dialog(self):
         dlg = AddMedicineDialog(
@@ -125,21 +147,17 @@ class MainWindow(QWidget):
     def paintEvent(self, event):
         painter = QPainter(self)
 
-        # общий фон
         painter.fillRect(self.rect(), QColor("#2C2C2C"))
 
-        # левый сайдбар-блок
         painter.setBrush(QBrush(QColor(75, 75, 75)))
         painter.setPen(Qt.NoPen)
         painter.drawRect(0, 0, 435, self.height())
 
-        # блок поиска сверху (общий, но мы его будем прятать на других экранах)
         painter.setBrush(QBrush(QColor(255, 255, 255, 40)))
         painter.setPen(QPen(QColor(44, 44, 44, 60), 1))
         if self.stacked.currentWidget() == self.page_home:
             painter.drawRoundedRect(516, 82, 1324, 95, 16, 16)
 
-        # заголовок слева "Micro Doser"
         painter.setPen(QColor(255, 255, 255))
 
         def text_with_icon(x, y, text, icon_path, scale, icon_offset_y=2, text_offset_y=0):
@@ -154,9 +172,7 @@ class MainWindow(QWidget):
         font_title.setWeight(QFont.Weight.DemiBold)
         painter.setFont(font_title)
 
-        text_with_icon(
-            67, 100, "Micro Doser", "icons/pils.png", 40, icon_offset_y=6
-        )
+        text_with_icon(67, 100, "Micro Doser", "icons/pils.png", 40, icon_offset_y=6)
 
     def _set_home_ui_visible(self, visible: bool):
         self.search_input.setVisible(visible)
@@ -165,20 +181,14 @@ class MainWindow(QWidget):
         self.next_month_btn.setVisible(visible)
         self.btn_add_medicine.setVisible(visible)
         self.btn_pick_medicine.setVisible(visible)
-        self.calendar.setVisible(visible)
-        self.update()
 
+        self.calendar.setVisible(visible)
+        self.month_out.setVisible(visible)
+
+        self.update()
 
     def on_search_clicked(self):
         print("Ищем по:", self.search_input.text())
-
-    def on_prev_month(self):
-        if self.stacked.currentWidget() == self.page_home:
-            self.page_home.prev_month()
-
-    def on_next_month(self):
-        if self.stacked.currentWidget() == self.page_home:
-            self.page_home.next_month()
 
     def show_home(self):
         self._set_home_ui_visible(True)

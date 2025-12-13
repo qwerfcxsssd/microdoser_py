@@ -165,7 +165,7 @@ class SettingsScreen(QWidget):
 
 
     def show_language_popup(self):
-        #ставим плашку примерно справа от строки "Сменить язык"
+        #ставим плашку примерно справа от строки
         anchor = self.row_lang.geometry()
         x = anchor.x() + anchor.width() - self.lang_popup.width()
         y = anchor.y() + anchor.height() + 14
