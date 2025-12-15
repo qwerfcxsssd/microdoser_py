@@ -25,8 +25,9 @@ def create_search_button(parent, on_clicked):
         }
     """)
 
-    # справа в блоке поиска
-    btn.move(1761, 105)
+                                                                                     
+                                                                                     
+    btn.move(1750, 102)
 
     btn.clicked.connect(on_clicked)
     return btn

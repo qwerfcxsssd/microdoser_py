@@ -94,7 +94,7 @@ class AddMedicineDialog(QDialog):
         bottom = QHBoxLayout()
 
         bottom_label = QLabel("Добавить это лекарство?")
-        bottom_font = QFont(self.font_text, 15)   # ← меньше
+        bottom_font = QFont(self.font_text, 15)             
         bottom_font.setWeight(QFont.Weight.DemiBold)
         bottom_label.setFont(bottom_font)
         bottom_label.setStyleSheet("color: rgba(240,240,240,210);")
@@ -158,9 +158,10 @@ class AddMedicineDialog(QDialog):
 
         edit = QTextEdit()
         edit.setPlaceholderText(placeholder)
-        edit.setReadOnly(True)
-        edit.setFocusPolicy(Qt.NoFocus)
-        edit.setCursor(Qt.ArrowCursor)
+                     
+        edit.setReadOnly(False)
+        edit.setFocusPolicy(Qt.StrongFocus)
+        edit.setCursor(Qt.IBeamCursor)
         edit.setFrameStyle(QTextEdit.NoFrame)
         edit.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         edit.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -178,3 +179,10 @@ class AddMedicineDialog(QDialog):
 
         layout.addWidget(edit)
         return panel, edit
+
+                            
+    def get_name_dose(self) -> str:
+        return self.name_dose.text().strip()
+
+    def get_info(self) -> str:
+        return self.info.toPlainText().strip()

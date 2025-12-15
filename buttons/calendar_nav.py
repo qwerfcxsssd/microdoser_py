@@ -20,7 +20,7 @@ def create_calendar_nav_buttons(parent, on_prev=None, on_next=None):
         }
     """
 
-    # left icon
+               
     btn_prev = QPushButton(parent)
     btn_prev.setIcon(QIcon("icons/left.png"))
     btn_prev.setIconSize(QSize(40, 40))
@@ -30,7 +30,7 @@ def create_calendar_nav_buttons(parent, on_prev=None, on_next=None):
     if on_prev:
         btn_prev.clicked.connect(on_prev)
 
-    #right icon
+               
     btn_next = QPushButton(parent)
     btn_next.setIcon(QIcon("icons/right.png"))
     btn_next.setIconSize(QSize(40, 40))

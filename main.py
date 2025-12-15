@@ -19,13 +19,13 @@ def load_font(path, fallback="Arial"):
 def main():
     app = QApplication(sys.argv)
 
-    # Загружаем шрифты
+                      
     font_circled = load_font("fonts/circled.ttf", "Arial")
     font_semibold = load_font("fonts/MontserratAlternates-SemiBold.ttf", "Arial")
 
     print(f"Загружены шрифты: {font_circled}, {font_semibold}")
 
-    # Передаём 2 шрифта в окно
+                              
     window = MainWindow(
         font_circled,
         font_semibold

@@ -6,10 +6,10 @@ from PySide6.QtCore import QSize
 def create_sidebar_buttons(parent, font_family,
                            on_home=None, on_diary=None, on_settings=None):
 
-    # Общий стиль
+                 
     style = _sidebar_button_style()
 
-    # Главное
+             
     btn_home = QPushButton("   Главное", parent)
     btn_home.setIcon(QIcon("icons/mainMenu.png"))
     btn_home.setIconSize(QSize(23, 23))
@@ -20,7 +20,7 @@ def create_sidebar_buttons(parent, font_family,
     if on_home:
         btn_home.clicked.connect(on_home)
 
-    # Ежедневник
+                
     btn_diary = QPushButton("   Ежедневник", parent)
     btn_diary.setIcon(QIcon("icons/diary.png"))
     btn_diary.setIconSize(QSize(23, 23))
@@ -31,7 +31,7 @@ def create_sidebar_buttons(parent, font_family,
     if on_diary:
         btn_diary.clicked.connect(on_diary)
 
-    # Настройки
+               
     btn_settings = QPushButton("   Настройки", parent)
     btn_settings.setIcon(QIcon("icons/settings.png"))
     btn_settings.setIconSize(QSize(25, 25))

@@ -37,13 +37,13 @@ def create_bottom_buttons(parent, font_family):
         }}
     """
 
-    # Подобрать лекарство
+                         
     btn_pick = QPushButton("Подобрать лекарство", parent)
     btn_pick.resize(639, 95)
     btn_pick.setStyleSheet(style_pick)
     btn_pick.move(516, 893)
 
-    # Добавить лекарство
+                        
     btn_add = QPushButton("Добавить лекарство", parent)
     btn_add.resize(639, 95)
     btn_add.setStyleSheet(style_add)
