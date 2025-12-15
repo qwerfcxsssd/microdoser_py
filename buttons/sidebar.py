@@ -12,22 +12,22 @@ def create_sidebar_buttons(parent, font_family,
              
     btn_home = QPushButton("   Главное", parent)
     btn_home.setIcon(QIcon("icons/mainMenu.png"))
-    btn_home.setIconSize(QSize(23, 23))
-    btn_home.resize(300, 90)
-    btn_home.setFont(QFont(font_family, 16))
+    btn_home.setIconSize(QSize(17, 17))
+    btn_home.resize(225, 75)
+    btn_home.setFont(QFont(font_family, 12))
     btn_home.setStyleSheet(style)
-    btn_home.move(70, 172)
+    btn_home.move(53, 143)
     if on_home:
         btn_home.clicked.connect(on_home)
 
                
     btn_settings = QPushButton("   Настройки", parent)
     btn_settings.setIcon(QIcon("icons/settings.png"))
-    btn_settings.setIconSize(QSize(25, 25))
-    btn_settings.resize(300, 90)
-    btn_settings.setFont(QFont(font_family, 16))
+    btn_settings.setIconSize(QSize(19, 19))
+    btn_settings.resize(225, 75)
+    btn_settings.setFont(QFont(font_family, 12))
     btn_settings.setStyleSheet(style)
-    btn_settings.move(70, 263)
+    btn_settings.move(53, 218)
     if on_settings:
         btn_settings.clicked.connect(on_settings)
 
@@ -43,7 +43,7 @@ def _sidebar_button_style():
             color: white;
             background-color: transparent;
             border-radius: 8px;
-            font-size: 24px;
+            font-size: 20px;
         }
         QPushButton:hover {
             background-color: rgba(255, 255, 255, 40);

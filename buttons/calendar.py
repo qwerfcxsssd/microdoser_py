@@ -10,14 +10,15 @@ from PySide6.QtWidgets import (
 )
 
 
+
 class Calendar(QWidget):
     date_selected = Signal(QDate)
-    btn_size = 56
+    btn_size = 42
 
     style_day = """
         QPushButton {
             background-color: rgba(255, 255, 255, 0);
-            border-radius: 27px;
+            border-radius: 21px;
             color: rgba(240,240,240,210);
         }
         QPushButton:hover {
@@ -32,7 +33,7 @@ class Calendar(QWidget):
         QPushButton {
             background-color: rgba(107, 80, 156, 255);
             color: white;
-            border-radius: 27px;
+            border-radius: 21px;
         }
         QPushButton:hover {
             background-color: rgba(104, 80, 156, 190);
@@ -59,7 +60,7 @@ class Calendar(QWidget):
 
     def init_ui(self):
                                      
-        self.setFixedSize(590, 485)
+        self.setFixedSize(443, 403)
 
         main_layout = QVBoxLayout(self)
         main_layout.setSpacing(0)
@@ -68,7 +69,7 @@ class Calendar(QWidget):
                           
         self.calendar_panel = QFrame(self)
         self.calendar_panel.setObjectName("calendar_panel")
-        self.calendar_panel.setFixedSize(590, 485)
+        self.calendar_panel.setFixedSize(443, 403)
         self.calendar_panel.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.calendar_panel.setStyleSheet("""
             QFrame#calendar_panel {
@@ -93,7 +94,7 @@ class Calendar(QWidget):
             label = QLabel(day)
             label.setAlignment(Qt.AlignCenter)
 
-            f = QFont(self.font_semibold, 17)
+            f = QFont(self.font_semibold, 13)
             f.setWeight(QFont.Weight.DemiBold)
             label.setFont(f)
 
@@ -148,7 +149,7 @@ class Calendar(QWidget):
                 day_btn.setCursor(Qt.PointingHandCursor)
 
                             
-                f = QFont(self.font_text, 16)
+                f = QFont(self.font_text, 12)
                 f.setWeight(QFont.Weight.Medium)
                 day_btn.setFont(f)
 

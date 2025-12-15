@@ -11,7 +11,7 @@ class ToggleSwitch(QPushButton):
         super().__init__(parent)
         self.setCheckable(True)
         self.setCursor(Qt.PointingHandCursor)
-        self.setFixedSize(90, 34)
+        self.setFixedSize(68,28)
         self.setStyleSheet("QPushButton{background: transparent; border: none;}")
 
     def paintEvent(self, event):
@@ -42,7 +42,7 @@ class SettingsRow(QWidget):
         self.font_family = font_family
         self.with_switch = with_switch
 
-        self.setFixedSize(1200, 86)
+        self.setFixedSize(900, 71)
 
         self.btn = QPushButton("", self)
         self.btn.setGeometry(0, 0, self.width(), self.height())
@@ -84,7 +84,7 @@ class SettingsRow(QWidget):
         font = QFont(self.font_family, 22)
         font.setWeight(QFont.Weight.Medium)
         p.setFont(font)
-        p.drawText(28, 56, self.text)
+        p.drawText(21, 46, self.text)
 
 
 class LanguagePopup(QFrame):
@@ -95,7 +95,7 @@ class LanguagePopup(QFrame):
 
         self.font_family = font_family
         self.setObjectName("LanguagePopup")
-        self.setFixedSize(420, 190)
+        self.setFixedSize(315, 158)
 
         self.setStyleSheet(f"""
             QFrame#LanguagePopup {{
@@ -123,8 +123,8 @@ class LanguagePopup(QFrame):
         self.btn_ru = QPushButton("Русский", self)
         self.btn_en = QPushButton("English", self)
 
-        self.btn_ru.setGeometry(26, 26, 368, 64)
-        self.btn_en.setGeometry(26, 100, 368, 64)
+        self.btn_ru.setGeometry(20, 22, 276, 53)
+        self.btn_en.setGeometry(20, 83, 276, 53)
 
         self.btn_ru.clicked.connect(lambda: self.language_selected.emit("ru"))
         self.btn_en.clicked.connect(lambda: self.language_selected.emit("en"))
@@ -138,11 +138,11 @@ class SettingsScreen(QWidget):
         self.conn = conn
 
         self.margin_left = 60
-        self.title_y = 62
+        self.title_y = 51
 
-        self.row_x = 60
-        self.row_y0 = 110
-        self.row_gap = 28
+        self.row_x = 45
+        self.row_y0 = 91
+        self.row_gap = 21
 
         self.row_lang = SettingsRow(self, "Сменить язык ответа ассистента", self.font_buttons)
         self.row_kids = SettingsRow(self, "Детский режим", self.font_buttons, with_switch=True)

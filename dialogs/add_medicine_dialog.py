@@ -15,7 +15,7 @@ class AddMedicineDialog(QDialog):
 
         self.setModal(True)
         self.setWindowTitle("Добавить лекарство")
-        self.setFixedSize(1300, 760)
+        self.setFixedSize(975, 631)
 
         self.setStyleSheet(f"""
             QDialog {{
@@ -32,7 +32,7 @@ class AddMedicineDialog(QDialog):
                 border: none;
                 outline: none;
                 color: rgba(245,245,245,240);
-                font-size: 18px;
+                font-size: 14px;
                 font-family: '{self.font_text}';
             }}
 
@@ -48,7 +48,7 @@ class AddMedicineDialog(QDialog):
             QPushButton {{
                 border: none;
                 border-radius: 16px;
-                font-size: 18px;
+                font-size: 14px;
                 color: white;
                 font-family: '{self.font_text}';
                 padding: 12px 18px;
@@ -61,30 +61,30 @@ class AddMedicineDialog(QDialog):
 
 
         title = QLabel("Добавить лекарство")
-        title_font = QFont(self.font_title, 26)
+        title_font = QFont(self.font_title, 22)
         title_font.setWeight(QFont.Weight.DemiBold)
         title.setFont(title_font)
         root.addWidget(title)
 
 
         lbl1 = QLabel("Введите название лекарства и дозировку в мг")
-        lbl1.setFont(QFont(self.font_text, 14))
+        lbl1.setFont(QFont(self.font_text, 10))
         root.addWidget(lbl1)
 
         name_panel, self.name_dose = self._make_line_panel(
             "Например: Ибупрофен 200 мг",
-            height=70
+            height=58
         )
         root.addWidget(name_panel)
 
 
         lbl2 = QLabel("Информация о лекарстве:")
-        lbl2.setFont(QFont(self.font_text, 14))
+        lbl2.setFont(QFont(self.font_text, 10))
         root.addWidget(lbl2)
 
         info_panel, self.info = self._make_text_panel(
             "Например: как принимать, курс, противопоказания…",
-            height=380
+            height=315
         )
         root.addWidget(info_panel)
 
@@ -94,7 +94,7 @@ class AddMedicineDialog(QDialog):
         bottom = QHBoxLayout()
 
         bottom_label = QLabel("Добавить это лекарство?")
-        bottom_font = QFont(self.font_text, 15)             
+        bottom_font = QFont(self.font_text, 12)
         bottom_font.setWeight(QFont.Weight.DemiBold)
         bottom_label.setFont(bottom_font)
         bottom_label.setStyleSheet("color: rgba(240,240,240,210);")
@@ -103,12 +103,12 @@ class AddMedicineDialog(QDialog):
         bottom.addStretch()
 
         ok = QPushButton("Принять")
-        ok.setFixedSize(160, 56)
+        ok.setFixedSize(120, 46)
         ok.setStyleSheet("background-color: rgba(131,123,228,255);")
         ok.clicked.connect(self.accept)
 
         cancel = QPushButton("Отказаться")
-        cancel.setFixedSize(190, 56)
+        cancel.setFixedSize(143, 46)
         cancel.setStyleSheet("background-color: rgba(120,120,120,210);")
         cancel.clicked.connect(self.reject)
 

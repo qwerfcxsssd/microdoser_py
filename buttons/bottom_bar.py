@@ -8,7 +8,7 @@ def create_bottom_buttons(parent, font_family):
             background-color: rgba(83,83,87,255);
             border-radius: 16px;
             color: white;
-            font-size: 24px;
+            font-size: 20px;
             font-family: '{font_family}';
             font-weight: 600;
         }}
@@ -25,7 +25,7 @@ def create_bottom_buttons(parent, font_family):
             background-color: rgba(107, 80, 156, 255);
             border-radius: 16px;
             color: white;
-            font-size: 24px;
+            font-size: 20px;
             font-family: '{font_family}';
             font-weight: 600;
         }}
@@ -39,14 +39,14 @@ def create_bottom_buttons(parent, font_family):
 
                          
     btn_pick = QPushButton("Подобрать лекарство", parent)
-    btn_pick.resize(639, 95)
+    btn_pick.resize(479, 79)
     btn_pick.setStyleSheet(style_pick)
-    btn_pick.move(516, 893)
+    btn_pick.move(387, 741)
 
                         
     btn_add = QPushButton("Добавить лекарство", parent)
-    btn_add.resize(639, 95)
+    btn_add.resize(479, 79)
     btn_add.setStyleSheet(style_add)
-    btn_add.move(1201, 893)
+    btn_add.move(901, 741)
 
     return btn_add, btn_pick

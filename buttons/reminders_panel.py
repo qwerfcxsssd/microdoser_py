@@ -44,7 +44,7 @@ class RemindersPanel(QFrame):
         self.font_title = font_title
         self.font_text = font_text
 
-        self.setFixedSize(685, 485)
+        self.setFixedSize(514, 403)
         self.setStyleSheet(
             """
             QFrame {
@@ -62,7 +62,7 @@ class RemindersPanel(QFrame):
         header.setContentsMargins(0, 0, 0, 0)
 
         self.title_lbl = QLabel("Напоминания")
-        f = QFont(self.font_title, 18)
+        f = QFont(self.font_title, 14)
         f.setWeight(QFont.Weight.DemiBold)
         self.title_lbl.setFont(f)
                                                                                                  
@@ -72,7 +72,7 @@ class RemindersPanel(QFrame):
 
         self.date_lbl = QLabel("")
         self.date_lbl.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        self.date_lbl.setFont(QFont(self.font_text, 13))
+        self.date_lbl.setFont(QFont(self.font_text, 9))
                                                                                    
         self.date_lbl.setStyleSheet(
             "color: rgba(255,255,255,160); background: transparent; border: none; padding: 0px;"
@@ -102,7 +102,7 @@ class RemindersPanel(QFrame):
         self.body_layout.setSpacing(10)
 
         self.empty_lbl = QLabel("Пока нет напоминаний")
-        self.empty_lbl.setFont(QFont(self.font_text, 14))
+        self.empty_lbl.setFont(QFont(self.font_text, 10))
         self.empty_lbl.setStyleSheet("color: rgba(255,255,255,150);")
         self.empty_lbl.setAlignment(Qt.AlignCenter)
         self.body_layout.addWidget(self.empty_lbl)
@@ -165,7 +165,7 @@ class RemindersPanel(QFrame):
             }
             """
         )
-        row.setFixedHeight(74)
+        row.setFixedHeight(61)
 
         lay = QHBoxLayout(row)
         lay.setContentsMargins(16, 10, 16, 10)
@@ -173,7 +173,7 @@ class RemindersPanel(QFrame):
 
                                                                        
         time_badge = QFrame()
-        time_badge.setFixedSize(74, 46)
+        time_badge.setFixedSize(56, 38)
         time_badge.setStyleSheet(
             "QFrame { background-color: rgba(90,90,90,120); border-radius: 12px; }"
         )
@@ -183,7 +183,7 @@ class RemindersPanel(QFrame):
 
         time_lbl = QLabel(item.time_hhmm())
         time_lbl.setAlignment(Qt.AlignCenter)
-        tf = QFont(self.font_title, 14)
+        tf = QFont(self.font_title, 10)
         tf.setWeight(QFont.Weight.DemiBold)
         time_lbl.setFont(tf)
         time_lbl.setStyleSheet(
@@ -196,7 +196,7 @@ class RemindersPanel(QFrame):
         title_col.setSpacing(2)
 
         title_lbl = QLabel(item.title)
-        title_lbl.setFont(QFont(self.font_text, 14))
+        title_lbl.setFont(QFont(self.font_text, 10))
                                                                       
         title_lbl.setStyleSheet(
             "color: rgba(255,255,255,225); background: transparent; border: none; padding: 0px;"
@@ -206,7 +206,7 @@ class RemindersPanel(QFrame):
 
         if item.notes:
             note_lbl = QLabel(item.notes)
-            note_lbl.setFont(QFont(self.font_text, 11))
+            note_lbl.setFont(QFont(self.font_text, 7))
             note_lbl.setStyleSheet(
                 "color: rgba(255,255,255,155); background: transparent; border: none; padding: 0px;"
             )
