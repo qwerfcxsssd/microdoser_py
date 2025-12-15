@@ -13,7 +13,6 @@ from buttons.search_button import create_search_button
 
         
 from screens.home_screen import HomeScreen
-from screens.diary_screen import DiaryScreen
 from screens.settings_screen import SettingsScreen
 
          
@@ -81,10 +80,8 @@ class MainWindow(QWidget):
         self.page_home = HomeScreen(self.font_circled, self.font_semibold)
 
         self.page_settings = SettingsScreen(self.font_semibold, self.font_circled, conn=self.conn)
-        self.page_diary = DiaryScreen(self.font_semibold, self.font_circled)
 
-        self.stacked.addWidget(self.page_home)               
-        self.stacked.addWidget(self.page_diary)              
+        self.stacked.addWidget(self.page_home)
         self.stacked.addWidget(self.page_settings)           
 
                                     
@@ -161,11 +158,10 @@ class MainWindow(QWidget):
 
         self.search_button = create_search_button(self, self.on_search_clicked)
 
-        self.btn_home, self.btn_diary, self.btn_settings = create_sidebar_buttons(
+        self.btn_home, self.btn_settings = create_sidebar_buttons(
             self,
             self.font_circled,
             on_home=self.show_home,
-            on_diary=self.show_diary,
             on_settings=self.show_settings,
         )
 

@@ -4,7 +4,7 @@ from PySide6.QtCore import QSize
 
 
 def create_sidebar_buttons(parent, font_family,
-                           on_home=None, on_diary=None, on_settings=None):
+                           on_home=None,  on_settings=None):
 
                  
     style = _sidebar_button_style()
@@ -20,17 +20,6 @@ def create_sidebar_buttons(parent, font_family,
     if on_home:
         btn_home.clicked.connect(on_home)
 
-                
-    btn_diary = QPushButton("   Ежедневник", parent)
-    btn_diary.setIcon(QIcon("icons/diary.png"))
-    btn_diary.setIconSize(QSize(23, 23))
-    btn_diary.resize(300, 90)
-    btn_diary.setFont(QFont(font_family, 16))
-    btn_diary.setStyleSheet(style)
-    btn_diary.move(70, 263)
-    if on_diary:
-        btn_diary.clicked.connect(on_diary)
-
                
     btn_settings = QPushButton("   Настройки", parent)
     btn_settings.setIcon(QIcon("icons/settings.png"))
@@ -38,11 +27,11 @@ def create_sidebar_buttons(parent, font_family,
     btn_settings.resize(300, 90)
     btn_settings.setFont(QFont(font_family, 16))
     btn_settings.setStyleSheet(style)
-    btn_settings.move(70, 356)
+    btn_settings.move(70, 263)
     if on_settings:
         btn_settings.clicked.connect(on_settings)
 
-    return btn_home, btn_diary, btn_settings
+    return btn_home, btn_settings
 
 
 def _sidebar_button_style():
