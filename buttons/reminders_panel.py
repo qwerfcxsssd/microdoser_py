@@ -38,10 +38,6 @@ class ReminderItemData:
 
 
 class RemindersPanel(QFrame):
-    """Плашка "Напоминания" на HomeScreen.
-
-    Сюда кладём события на выбранную дату (по факту — из calendar_events).
-    """
 
     def __init__(self, parent: QWidget, *, font_title: str, font_text: str):
         super().__init__(parent)

@@ -22,7 +22,7 @@ _ISO_DT_RE = re.compile(r"^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2})
 
 
 def _parse_iso_local_dt(s: str) -> datetime:
-    """Парсим локальный ISO datetime вида YYYY-MM-DDTHH:MM[:SS]."""
+
     s = (s or "").strip()
     m = _ISO_DT_RE.match(s)
     if not m:
@@ -82,13 +82,7 @@ def save_llm_result(
     language: str,
     llm_json: dict,
 ) -> int:
-    """Сохраняет результат LLM в БД.
 
-    Возвращает llm_run_id (id строки в llm_runs).
-
-    Примечание: раньше проект писал в таблицу llm_results. Для обратной совместимости
-    мы оставляем этот лог тоже (не мешает новой схеме).
-    """
     saved = save_llm_result_full(
         conn,
         user_text=user_text,

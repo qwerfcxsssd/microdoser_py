@@ -1,7 +1,7 @@
 import sys
 import os
 from PySide6.QtWidgets import QApplication
-from PySide6.QtGui import QFontDatabase
+from PySide6.QtGui import QFontDatabase, QIcon
 
 from main_window import MainWindow
 
@@ -19,7 +19,8 @@ def load_font(path, fallback="Arial"):
 def main():
     app = QApplication(sys.argv)
 
-                      
+    app.setWindowIcon(QIcon("icons/app.ico"))
+
     font_circled = load_font("fonts/circled.ttf", "Arial")
     font_semibold = load_font("fonts/MontserratAlternates-SemiBold.ttf", "Arial")
 

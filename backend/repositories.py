@@ -144,9 +144,7 @@ class CalendarRepo:
         return int(cur.lastrowid)
 
     def list_between(self, start_local: str, end_local: str) -> list[sqlite3.Row]:
-        """
-        start_local/end_local: ISO 'YYYY-MM-DDTHH:MM:SS'
-        """
+
         cur = self.conn.cursor()
         cur.execute(
             """
@@ -173,9 +171,7 @@ class DiaryRepo:
         return int(cur.lastrowid)
 
     def list_between(self, start_date: str, end_date: str) -> list[sqlite3.Row]:
-        """
-        start_date/end_date: 'YYYY-MM-DD', end_date включительно
-        """
+
         cur = self.conn.cursor()
         cur.execute(
             """

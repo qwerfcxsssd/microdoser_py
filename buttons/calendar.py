@@ -54,7 +54,6 @@ class Calendar(QWidget):
         self.init_ui()
 
     def set_marked_days(self, days: Iterable[int]) -> None:
-        """Отмечает дни (числа месяца), для которых есть события/напоминания."""
         self._marked_days = {int(d) for d in days if int(d) > 0}
         self.update_calendar()
 

@@ -389,11 +389,6 @@ class MainWindow(QWidget):
                             
     @Slot(dict)
     def _add_med_on_ok(self, data: dict):
-        """Обработчик успешного ответа LLM для ручного 'Добавить лекарство'.
-
-        Важно: этот слот ДОЛЖЕН исполняться в GUI-потоке. Поэтому он объявлен
-        как метод MainWindow (QObject), а не как вложенная функция.
-        """
         try:
             ctx = getattr(self, "_add_med_ctx", {}) or {}
             start_date = ctx.get("start_date")
@@ -455,7 +450,7 @@ class MainWindow(QWidget):
         self.refresh_home_planner()
 
     def refresh_home_planner(self):
-        """Подтягивает события из БД: отмечает дни в календаре и обновляет список напоминаний."""
+    
         try:
             repo = CalendarRepo(self.conn)
 

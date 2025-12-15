@@ -10,11 +10,7 @@ DEFAULT_MODEL = "deepseek/deepseek-chat:free"
 
 
 def _json_schema() -> Dict[str, Any]:
-    """JSON Schema для Structured Outputs.
 
-    Используем response_format.type='json_schema' и plugin 'response-healing'
-    (OpenRouter) для автоматического исправления мелких ошибок JSON.
-    """
     return {
         "name": "medicine_plan",
         "strict": True,

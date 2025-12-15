@@ -50,12 +50,7 @@ def _safe_list(x) -> list[str]:
 
 
 def _prune_to_single_recommendation(data: dict) -> dict:
-    """Гарантирует, что в UI/сохранение пойдёт ровно ОДНА рекомендация.
 
-    Некоторые модели могут вернуть 2–3 варианта, даже если мы просили один.
-    Мы не хотим показывать/добавлять несколько вариантов — поэтому жёстко
-    оставляем только первый элемент списка.
-    """
     if not isinstance(data, dict):
         return data
 
@@ -79,10 +74,7 @@ def _prune_to_single_recommendation(data: dict) -> dict:
     return data
 
 def _ensure_min_calendar_event(data: dict, start_date: str | None) -> dict:
-    """Если LLM вернул пустой planner.calendar_events — добавим минимум одно событие.
 
-    Это нужно, чтобы кнопка «Добавить» всегда реально добавляла что-то в календарь/напоминания.
-    """
     if not isinstance(data, dict):
         return data
 
@@ -117,10 +109,7 @@ def _ensure_min_calendar_event(data: dict, start_date: str | None) -> dict:
 
 
 def _format_llm_json_ru(data: dict) -> str:
-    """
-    Красивый вывод: лекарство + особенности + курс + предупреждения.
-    Поддерживает разные ключи, если модель вернула чуть другую структуру.
-    """
+
     ui = data.get("ui_hints") or {}
     triage = data.get("triage") or {}
     recs = data.get("recommendations") or data.get("medicines") or []

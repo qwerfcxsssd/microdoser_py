@@ -144,7 +144,7 @@ class SettingsScreen(QWidget):
         self.row_y0 = 110
         self.row_gap = 28
 
-        self.row_lang = SettingsRow(self, "Сменить язык", self.font_buttons)
+        self.row_lang = SettingsRow(self, "Сменить язык ответа ассистента", self.font_buttons)
         self.row_kids = SettingsRow(self, "Детский режим", self.font_buttons, with_switch=True)
         self.row_llm  = SettingsRow(self, "LLM / API", self.font_buttons)
 
@@ -224,7 +224,6 @@ class SettingsScreen(QWidget):
                 self.hide_language_popup()
         super().mousePressEvent(event)
 
-                              
     def open_llm_settings(self):
         if not self.conn:
             return
@@ -235,28 +234,76 @@ class SettingsScreen(QWidget):
         dlg = QDialog(self)
         dlg.setWindowTitle("LLM / API")
         dlg.setModal(True)
+        dlg.setFixedSize(960, 320)
+
+        dlg.setStyleSheet(f"""
+            QDialog {{
+                background-color: #2C2C2C;
+                border-radius: 20px;
+            }}
+
+            QLabel {{
+                color: white;
+                font-size: 18px;
+                font-family: '{self.font_buttons}';
+            }}
+
+            QLineEdit {{
+                background-color: rgba(255,255,255,40);
+                border: none;
+                border-radius: 12px;
+                padding: 12px 14px;
+                color: white;
+                font-size: 18px;
+                font-family: '{self.font_buttons}';
+            }}
+
+            QPushButton {{
+                background-color: rgba(255,255,255,60);
+                border: none;
+                border-radius: 14px;
+                padding: 10px 24px;
+                color: white;
+                font-size: 18px;
+                font-family: '{self.font_buttons}';
+            }}
+        """)
 
         root = QVBoxLayout(dlg)
+        root.setContentsMargins(24, 24, 24, 24)
+        root.setSpacing(16)
 
-        root.addWidget(QLabel("OpenRouter API key:"))
+        lbl_api = QLabel("OpenRouter API key:")
+        root.addWidget(lbl_api)
+
         api_in = QLineEdit()
         api_in.setEchoMode(QLineEdit.EchoMode.Password)
         api_in.setPlaceholderText("sk-...")
         api_in.setText(api_key)
         root.addWidget(api_in)
 
-        root.addWidget(QLabel("Модель (OpenRouter id):"))
+        lbl_model = QLabel("Модель (OpenRouter id):")
+        root.addWidget(lbl_model)
+
         model_in = QLineEdit()
         model_in.setPlaceholderText("deepseek/deepseek-chat:free")
         model_in.setText(model)
         root.addWidget(model_in)
 
+        root.addStretch()
+
         btns = QHBoxLayout()
+        btns.addStretch()
+
         btn_cancel = QPushButton("Отмена")
         btn_save = QPushButton("Сохранить")
+
         btns.addWidget(btn_cancel)
         btns.addWidget(btn_save)
+
         root.addLayout(btns)
+
+        btn_cancel.clicked.connect(dlg.reject)
 
         def _save():
             self._set_setting("openrouter_api_key", api_in.text().strip())
