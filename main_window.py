@@ -72,10 +72,10 @@ class MainWindow(QWidget):
         self.font_semibold = font_semibold
 
         self.setWindowTitle("Micro Doser")
-        self.resize(1920, 1080)
+        self.resize(1440, 900)
 
         self.stacked = QStackedWidget(self)
-        self.stacked.setGeometry(516, 200, 1320, 650)
+        self.stacked.setGeometry(387, 166, 990, 540)
 
         self.page_home = HomeScreen(self.font_circled, self.font_semibold)
 
@@ -90,7 +90,7 @@ class MainWindow(QWidget):
             font_title=self.font_semibold,
             font_text=self.font_circled,
         )
-        self.reminders_panel.move(0, 130)
+        self.reminders_panel.move(0, 108)
         self.reminders_panel.setVisible(False)
 
                             
@@ -99,7 +99,7 @@ class MainWindow(QWidget):
             font_text=self.font_circled,
             font_semibold=self.font_semibold
         )
-        self.calendar.move(730, 130)                     
+        self.calendar.move(548, 108)
         self.calendar.setVisible(False)
         self.calendar.date_selected.connect(self.on_calendar_date_selected)
 
@@ -115,12 +115,21 @@ class MainWindow(QWidget):
                 padding-right: 18px;
             }
         """)
-        f = QFont(self.font_circled, 14)
+        f = QFont(self.font_circled, 10)
         f.setWeight(QFont.Weight.DemiBold)
         self.month_out.setFont(f)
-        self.month_out.setFixedHeight(42)
+        self.month_out.setFixedHeight(32)
         self.month_out.adjustSize()
-        self.month_out.move(1015, 64)
+        self.month_out.move(761, 53)
+        self.month_out.setStyleSheet(f"""
+            QLabel {{
+                background-color: rgba(90, 90, 92, 220);   
+                color: rgba(255,255,255,235);
+                border-radius: 14px;
+                padding-left: 14px;
+                padding-right: 14px;
+            }}
+        """)
         self.month_out.setVisible(False)
 
                        
@@ -141,7 +150,7 @@ class MainWindow(QWidget):
         self.search_input = QLineEdit(self)
         self.search_input.setPlaceholderText("Поиск")
                                                                       
-        self.search_input.setFixedSize(1220, 52)
+        self.search_input.setFixedSize(915, 43)
         self.search_input.setStyleSheet(
             f"""
             QLineEdit {{
@@ -154,7 +163,7 @@ class MainWindow(QWidget):
             }}
             """
         )
-        self.search_input.move(530, 99)
+        self.search_input.move(398, 82)
 
         self.search_button = create_search_button(self, self.on_search_clicked)
 
@@ -339,7 +348,7 @@ class MainWindow(QWidget):
 
         painter.setBrush(QBrush(QColor(75, 75, 75)))
         painter.setPen(Qt.NoPen)
-        painter.drawRect(0, 0, 435, self.height())
+        painter.drawRect(0, 0, 326, self.height())
 
                                                       
                                                                  
@@ -352,22 +361,36 @@ class MainWindow(QWidget):
             painter.setBrush(QBrush(QColor(255, 255, 255, 40)))
             painter.setPen(Qt.NoPen)
                                                      
-            painter.drawRoundedRect(500, 78, 1330, 95, 30, 30)
+            painter.drawRoundedRect(375, 65, 998, 79, 30, 30)
 
-                                                                            
+        def draw_logo(x, y, text, icon_path):
+            icon_size = int(30)
 
-        def text_with_icon(x, y, text, icon_path, icon_size=32, icon_offset_y=0):
+            font = QFont(self.font_semibold, int(23))
+            font.setWeight(QFont.Weight.DemiBold)
+            painter.setFont(font)
+
+            fm = painter.fontMetrics()
+            text_w = fm.horizontalAdvance(text)
+            text_h = fm.height()
+
+            block_h = max(icon_size, text_h)
+
+            icon_y = y + (block_h - icon_size) // 2
+            text_y = y + (block_h + fm.ascent() - fm.descent()) // 2
+
             ipix = QPixmap(icon_path)
             if not ipix.isNull():
-                painter.drawPixmap(x, y + icon_offset_y, icon_size, icon_size, ipix)
+                painter.drawPixmap(x, icon_y, icon_size, icon_size, ipix)
 
             painter.setPen(QColor(255, 255, 255))
-            font_title = QFont(self.font_semibold, 30)
-            font_title.setWeight(QFont.Weight.DemiBold)
-            painter.setFont(font_title)
-            painter.drawText(x + icon_size + 15, y + 33, text)
+            painter.drawText(
+                x + icon_size + int(11),
+                text_y,
+                text
+            )
 
-        text_with_icon(67, 100, "Micro Doser", "icons/pils.png", 40, icon_offset_y=6)
+        draw_logo(50, 75, "Micro Doser", "icons/pils.png")
 
     def _set_home_ui_visible(self, visible: bool):
         self.search_input.setVisible(visible)
@@ -450,7 +473,7 @@ class MainWindow(QWidget):
         self.refresh_home_planner()
 
     def refresh_home_planner(self):
-    
+
         try:
             repo = CalendarRepo(self.conn)
 

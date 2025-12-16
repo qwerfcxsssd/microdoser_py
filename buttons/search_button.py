@@ -8,8 +8,8 @@ def create_search_button(parent, on_clicked):
 
     btn = QPushButton(parent)
     btn.setIcon(QIcon("icons/search.png"))
-    btn.setIconSize(QSize(28, 28))
-    btn.resize(48, 48)
+    btn.setIconSize(QSize(21, 21))
+    btn.resize(36, 36)
     btn.setStyleSheet("""
         QPushButton {
             background: transparent;
@@ -27,7 +27,7 @@ def create_search_button(parent, on_clicked):
 
                                                                                      
                                                                                      
-    btn.move(1750, 102)
+    btn.move(1313, 87)
 
     btn.clicked.connect(on_clicked)
     return btn

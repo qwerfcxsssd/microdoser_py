@@ -19,7 +19,7 @@ def load_font(path, fallback="Arial"):
 def main():
     app = QApplication(sys.argv)
 
-    app.setWindowIcon(QIcon("icons/app.ico"))
+    app.setWindowIcon(QIcon("icons/icon.ico"))
 
     font_circled = load_font("fonts/circled.ttf", "Arial")
     font_semibold = load_font("fonts/MontserratAlternates-SemiBold.ttf", "Arial")

@@ -287,7 +287,7 @@ class PickMedicineDialog(QDialog):
 
         self.setModal(True)
         self.setWindowTitle("Подобрать лекарство")
-        self.setFixedSize(1300, 760)
+        self.setFixedSize(975, 631)
 
         self.setStyleSheet(f"""
             QDialog {{
@@ -302,7 +302,7 @@ class PickMedicineDialog(QDialog):
                 border: none;
                 outline: none;
                 color: rgba(245,245,245,240);
-                font-size: 18px;
+                font-size: 14px;
                 font-family: '{self.font_text}';
             }}
             QTextEdit::viewport {{
@@ -315,7 +315,7 @@ class PickMedicineDialog(QDialog):
             QPushButton {{
                 border: none;
                 border-radius: 16px;
-                font-size: 18px;
+                font-size: 14px;
                 color: white;
                 font-family: '{self.font_text}';
                 padding: 12px 18px;
@@ -323,11 +323,11 @@ class PickMedicineDialog(QDialog):
         """)
 
         root = QVBoxLayout(self)
-        root.setContentsMargins(28, 22, 28, 24)
-        root.setSpacing(18)
+        root.setContentsMargins(21, 18, 21, 20)
+        root.setSpacing(14)
 
         title = QLabel("Подобрать лекарство")
-        title_font = QFont(self.font_title, 26)
+        title_font = QFont(self.font_title, 24)
         title_font.setWeight(QFont.Weight.DemiBold)
         title.setFont(title_font)
         root.addWidget(title)
@@ -336,14 +336,14 @@ class PickMedicineDialog(QDialog):
         lbl1.setFont(QFont(self.font_text, 14))
         root.addWidget(lbl1)
 
-        search_panel, self.search = self._make_line_panel("Например: головная боль, температура", height=70)
+        search_panel, self.search = self._make_line_panel("Например: головная боль, температура", height=70 * 0.83)
         root.addWidget(search_panel)
 
         lbl2 = QLabel("Результат подбора:")
         lbl2.setFont(QFont(self.font_text, 14))
         root.addWidget(lbl2)
 
-        result_panel, self.result = self._make_text_panel("Здесь появится: лекарство, особенности и курс", height=380)
+        result_panel, self.result = self._make_text_panel("Здесь появится: лекарство, особенности и курс", height=380 * 0.83)
         root.addWidget(result_panel)
 
         root.addStretch()
@@ -351,7 +351,7 @@ class PickMedicineDialog(QDialog):
         bottom = QHBoxLayout()
 
         bottom_label = QLabel("Добавить это лекарство?")
-        bottom_font = QFont(self.font_text, 15)
+        bottom_font = QFont(self.font_text, 12)
         bottom_font.setWeight(QFont.Weight.DemiBold)
         bottom_label.setFont(bottom_font)
         bottom_label.setStyleSheet("color: rgba(240,240,240,210);")
@@ -361,20 +361,20 @@ class PickMedicineDialog(QDialog):
 
         self.pick_btn = QPushButton("Подобрать")
         self.pick_btn.setCursor(Qt.PointingHandCursor)
-        self.pick_btn.setFixedSize(190, 56)
+        self.pick_btn.setFixedSize(143, 46)
         self.pick_btn.setStyleSheet("background-color: rgba(90,90,90,210);")
         self.pick_btn.clicked.connect(self._on_pick_clicked)
 
         self.add_button = QPushButton("Добавить")
         self.add_button.setCursor(Qt.PointingHandCursor)
-        self.add_button.setFixedSize(160, 56)
+        self.add_button.setFixedSize(120, 46)
         self.add_button.setStyleSheet("background-color: rgba(131,123,228,255);")
         self.add_button.setEnabled(False)
         self.add_button.clicked.connect(self.accept)
 
         cancel_btn = QPushButton("Отмена")
         cancel_btn.setCursor(Qt.PointingHandCursor)
-        cancel_btn.setFixedSize(190, 56)
+        cancel_btn.setFixedSize(143, 46)
         cancel_btn.setStyleSheet("background-color: rgba(120,120,120,210);")
         cancel_btn.clicked.connect(self.reject)
 
