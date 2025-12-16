@@ -21,12 +21,17 @@ from dialogs.add_medicine_dialog import AddMedicineDialog
 
 from backend.db import connect, init_db
 from backend.save_llm_result import save_llm_result
-from backend.llm_service import ask_openrouter_json, DEFAULT_MODEL
+from backend.llm_service import ask_openrouter_json, DEFAULT_MODEL,  resolve_llm_settings
 from backend.settings import get_setting
 import os
 from backend.repositories import CalendarRepo
 
 from datetime import datetime, timedelta
+
+
+
+
+
 
 
 
@@ -275,16 +280,25 @@ class MainWindow(QWidget):
             QMessageBox.information(self, "Добавить лекарство", "Введите название лекарства.")
             return
 
-                       
-        api_key = (get_setting(self.conn, "openrouter_api_key", "") or "").strip()
-        model = (get_setting(self.conn, "llm_model", DEFAULT_MODEL) or DEFAULT_MODEL).strip()
-        language = (get_setting(self.conn, "language", "ru") or "ru").strip()
+        db_settings = {
+            "openrouter_api_key": (get_setting(self.conn, "openrouter_api_key", "") or "").strip(),
+            "openrouter_model": (get_setting(self.conn, "llm_model", DEFAULT_MODEL) or DEFAULT_MODEL).strip(),
+            "language": (get_setting(self.conn, "language", "ru") or "ru").strip(),
+            "max_tokens": int(get_setting(self.conn, "max_tokens", 1200) or 1200),
+        }
+
+        resolved = resolve_llm_settings(db_settings)
+
+        api_key = resolved["api_key"]
+        model = resolved["model"]
+        language = resolved["language"]
 
         if not api_key:
-            api_key = os.getenv("OPENROUTER_API_KEY", "").strip()
-
-        if not api_key:
-            QMessageBox.warning(self, "LLM", "Не задан API key. Открой Настройки → LLM / API и вставь ключ.")
+            QMessageBox.warning(
+                self,
+                "LLM",
+                "не найден api key. положи llm_config.json в корень проекта или укажи ключ в настройках (резерв)."
+            )
             return
 
                                                     
@@ -294,17 +308,18 @@ class MainWindow(QWidget):
         except Exception:
             start_date = datetime.now().strftime("%Y-%m-%d")
 
-                                                                
+        info = (dlg.get_info() or "").strip()
+
         user_text = (
-            f"Лекарство: {medicine_name}\n"
-            f"Стартовая дата для плана: {start_date}\n\n"
-            "Составь примерный план напоминаний о приёме. "
-            "Требования:\n"
-            "1) Верни recommendations ровно с 1 объектом.\n"
-            "2) Если точная дозировка неизвестна — НЕ выдумывай, пиши 'см. инструкцию/назначение врача'.\n"
-            "3) В planner.calendar_events создай напоминания (title, datetime, duration_min, note) минимум на 3–7 дней, "
-            "datetime строго YYYY-MM-DDTHH:MM, начиная с указанной стартовой даты.\n"
-            "4) Верни ТОЛЬКО один валидный JSON по схеме."
+            f"лекарство и дозировка: {medicine_name}\n"
+            f"информация от пользователя (обязательно учитывать буквально): {info}\n"
+            f"стартовая дата для плана: {start_date}\n\n"
+            "жёсткие требования:\n"
+            "1) если пользователь указал курс/сроки/частоту (например '5 дней', '2 раза в день') — сделай ровно так.\n"
+            "2) не добавляй проверки состояния, мониторинг самочувствия и прочие общие советы.\n"
+            "3) верни recommendations ровно с 1 объектом.\n"
+            "4) в planner.calendar_events создай напоминания ровно на указанный срок; datetime YYYY-MM-DDTHH:MM.\n"
+            "5) верни только валидный json по схеме.\n"
         )
 
                       

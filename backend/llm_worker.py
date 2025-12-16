@@ -11,6 +11,8 @@ class _Worker(QObject):
     err = Signal(str)
     finished = Signal()
 
+
+
     def __init__(self, *, model: str, language: str, user_text: str, api_key: str | None):
         super().__init__()
         self.model = model or DEFAULT_MODEL

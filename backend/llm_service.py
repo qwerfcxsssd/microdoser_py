@@ -7,7 +7,72 @@ import requests
 
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 DEFAULT_MODEL = "deepseek/deepseek-chat:free"
+DEFAULT_MAX_TOKENS = 1200
+DEFAULT_LANGUAGE = "ru"
 
+
+from backend.llm_config import load_file_config
+
+#
+# from __future__ import annotations
+
+
+def resolve_llm_settings(db_settings: Dict[str, Any] | None) -> Dict[str, Any]:
+    db_settings = db_settings or {}
+    file_cfg = load_file_config() or {}
+
+    def _s(x: Any) -> str:
+        return (str(x).strip() if x is not None else "")
+
+    # 1) file (main)
+    api_key = _s(file_cfg.get("api_key"))
+    model = _s(file_cfg.get("model"))
+    max_tokens = file_cfg.get("max_tokens")
+    language = _s(file_cfg.get("language"))
+
+    used_source = "file" if (api_key or model or max_tokens or language) else ""
+
+    # 2) fallback: db/ui
+    if not api_key:
+        api_key = _s(db_settings.get("openrouter_api_key"))
+    if not model:
+        model = _s(db_settings.get("openrouter_model"))
+    if max_tokens in (None, "", 0):
+        max_tokens = db_settings.get("max_tokens")
+    if not language:
+        language = _s(db_settings.get("language"))
+
+    if not used_source and (api_key or model or max_tokens or language):
+        used_source = "settings"
+
+    # 3) fallback: env
+    if not api_key:
+        api_key = _s(os.getenv("OPENROUTER_API_KEY"))
+
+    if not used_source and api_key:
+        used_source = "env"
+
+    # 4) defaults
+    if not model:
+        model = DEFAULT_MODEL
+
+    if not language:
+        language = DEFAULT_LANGUAGE
+
+    # tokens: int + clamp
+    try:
+        max_tokens_int = int(max_tokens) if max_tokens not in (None, "", 0) else DEFAULT_MAX_TOKENS
+    except Exception:
+        max_tokens_int = DEFAULT_MAX_TOKENS
+    max_tokens_int = max(128, min(max_tokens_int, 2000))
+
+    return {
+        "api_key": api_key,
+        "model": model,
+        "max_tokens": max_tokens_int,
+        "language": language,
+        "source": used_source or "default",
+    }
 
 def _json_schema() -> Dict[str, Any]:
     return {
@@ -199,7 +264,7 @@ def ask_openrouter_json(
     payload = {
         "model": model or DEFAULT_MODEL,
         "messages": messages,
-        "temperature": 0.2,
+        "temperature": 0.5,
         "max_tokens": max_out,
                                                             
         "structured_outputs": True,

@@ -5,6 +5,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QFont
 from PySide6.QtCore import Qt
 
+from backend.llm_service import resolve_llm_settings
+
 
 class AddMedicineDialog(QDialog):
     def __init__(self, font_title: str, font_text: str, parent=None):
@@ -12,6 +14,11 @@ class AddMedicineDialog(QDialog):
 
         self.font_title = font_title
         self.font_text = font_text
+
+        self.font_title = font_title
+        self.font_text = font_text
+
+        self.llm_json = None
 
         self.setModal(True)
         self.setWindowTitle("Добавить лекарство")
@@ -105,7 +112,7 @@ class AddMedicineDialog(QDialog):
         ok = QPushButton("Принять")
         ok.setFixedSize(120, 46)
         ok.setStyleSheet("background-color: rgba(131,123,228,255);")
-        ok.clicked.connect(self.accept)
+        ok.clicked.connect(self.on_accept_clicked)
 
         cancel = QPushButton("Отказаться")
         cancel.setFixedSize(143, 46)
@@ -186,3 +193,71 @@ class AddMedicineDialog(QDialog):
 
     def get_info(self) -> str:
         return self.info.toPlainText().strip()
+
+    def get_llm_json(self):
+        return self.llm_json
+
+    def on_accept_clicked(self):
+        self.accept()
+
+    def accept(self):
+        # 1) читаем ввод
+        name_dose = self.get_name_dose()
+        info = self.get_info()
+
+        if not name_dose:
+            return
+
+        conn = getattr(self.parent(), "conn", None)
+
+        def _get_setting(key: str, default=""):
+            if conn is None:
+                return default
+            conn.execute(
+                "CREATE TABLE IF NOT EXISTS app_settings(key TEXT PRIMARY KEY, value TEXT NOT NULL)"
+            )
+            cur = conn.execute("SELECT value FROM app_settings WHERE key=?", (key,))
+            row = cur.fetchone()
+            return row[0] if row else default
+
+        db_settings = {
+            "openrouter_api_key": (_get_setting("openrouter_api_key", "") or "").strip(),
+            "openrouter_model": (_get_setting("llm_model", "") or "").strip(),
+            "language": (_get_setting("language", "ru") or "ru").strip(),
+            "max_tokens": int(_get_setting("max_tokens", 1200) or 1200),
+        }
+
+        # ВАЖНО: resolve_llm_settings сам сначала читает llm_config.json
+        resolved = resolve_llm_settings(db_settings)
+
+        resolved = resolve_llm_settings(db_settings)
+
+        if not resolved["api_key"]:
+            # покажи пользователю, что нужен llm_config.json или резерв в настройках
+            self.info.setPlainText(
+                "не найден api key. положи llm_config.json в корень проекта или укажи ключ в настройках (резерв)."
+            )
+            return
+
+        # 3) собираем промпт: ОБЯЗАТЕЛЬНО включаем info
+        user_payload = (
+            f"лекарство и дозировка: {name_dose}\n"
+            f"информация от пользователя (учитывать буквально): {info}\n\n"
+            "требования:\n"
+            "1) если пользователь указал курс/сроки (например '5 дней') — сделай ровно так.\n"
+            "2) верни только валидный json по схеме.\n"
+        )
+
+        # 4) вызываем LLM и сохраняем результат в диалоге
+        from backend.llm_service import ask_openrouter_json
+
+        data = ask_openrouter_json(
+            api_key=resolved["api_key"],
+            model=resolved["model"],
+            language=resolved["language"],
+            user_text=user_payload,
+            max_tokens=resolved["max_tokens"],
+        )
+
+        self.llm_json = data  # чтобы main_window мог взять dlg.get_llm_json()
+        super().accept()

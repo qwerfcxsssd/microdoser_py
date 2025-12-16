@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QFont
 from PySide6.QtCore import Qt, QObject, Signal, Slot, QThread
 
-                                                                     
+from backend.llm_service import resolve_llm_settings
                                                      
 _BACKEND_MODE = None
 try:
@@ -441,14 +441,18 @@ class PickMedicineDialog(QDialog):
 
     def _read_llm_settings(self) -> tuple[str, str, str]:
         conn = self._resolve_conn()
-        api_key = (get_setting(conn, "openrouter_api_key", "") or "").strip()
-        model = (get_setting(conn, "llm_model", DEFAULT_MODEL) or DEFAULT_MODEL).strip()
-        language = (get_setting(conn, "language", "ru") or "ru").strip()
 
-        if not api_key:
-            api_key = os.getenv("OPENROUTER_API_KEY", "").strip()
+        # читаем всё из базы как резерв
+        db_settings = {
+            "openrouter_api_key": (get_setting(conn, "openrouter_api_key", "") or "").strip(),
+            "openrouter_model": (get_setting(conn, "llm_model", DEFAULT_MODEL) or DEFAULT_MODEL).strip(),
+            "language": (get_setting(conn, "language", "ru") or "ru").strip(),
+            "max_tokens": (get_setting(conn, "max_tokens", 1200) or 1200),
+        }
 
-        return api_key, model, language
+        resolved = resolve_llm_settings(db_settings)
+
+        return resolved["api_key"], resolved["model"], resolved["language"]
 
     @Slot(dict)
     def _handle_ok(self, data: dict):
@@ -484,7 +488,9 @@ class PickMedicineDialog(QDialog):
 
         api_key, model, language = self._read_llm_settings()
         if not api_key:
-            self.result.setPlainText("Не задан API key. Открой Настройки → LLM / API и вставь ключ.")
+            self.result.setPlainText(
+                "не найден api key. положи llm_config.json в корень проекта или укажи ключ в настройках (резерв)."
+            )
             return
 
                                                     
@@ -526,3 +532,36 @@ class PickMedicineDialog(QDialog):
             self.result.setPlainText("Запрос выполняется… подожди, пожалуйста.")
             return
         super().reject()
+
+    def accept(self):
+        if not self.llm_json:
+            return
+
+        recs = self.llm_json.get("recommendations")
+        if not isinstance(recs, list) or not recs or not isinstance(recs[0], dict):
+            self.result.setPlainText("Не удалось извлечь лекарство из ответа.")
+            return
+
+        rec = recs[0]
+
+        med_name = (rec.get("name") or "").strip()
+        dose = (rec.get("dose") or "").strip()
+        how = (rec.get("how_to_take") or "").strip()
+        course = (rec.get("course") or "").strip()
+
+        fixed_note = "\n".join([
+            s for s in [
+                f"Дозировка: {dose}" if dose else "",
+                f"Как принимать: {how}" if how else "",
+            ] if s
+        ])
+
+        planner = self.llm_json.get("planner")
+        if isinstance(planner, dict):
+            events = planner.get("calendar_events")
+            if isinstance(events, list):
+                for ev in events:
+                    ev["title"] = med_name or "приём лекарства"
+                    ev["note"] = fixed_note
+
+        super().accept()
