@@ -31,7 +31,7 @@ def main():
         font_circled,
         font_semibold
     )
-    window.show()
+    window.showFullScreen()
 
     sys.exit(app.exec())
 

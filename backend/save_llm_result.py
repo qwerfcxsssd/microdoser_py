@@ -82,7 +82,6 @@ def save_llm_result(
     language: str,
     llm_json: dict,
 ) -> int:
-
     saved = save_llm_result_full(
         conn,
         user_text=user_text,

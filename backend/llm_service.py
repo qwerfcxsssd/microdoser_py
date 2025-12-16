@@ -10,7 +10,6 @@ DEFAULT_MODEL = "deepseek/deepseek-chat:free"
 
 
 def _json_schema() -> Dict[str, Any]:
-
     return {
         "name": "medicine_plan",
         "strict": True,
@@ -129,7 +128,7 @@ def _build_system_prompt(language: str) -> str:
         "Ты НЕ врач и не ставишь диагноз. "
         "Если симптомы могут быть опасными, выстави ui_hints.emergency=true и рекомендуй срочно обратиться за медицинской помощью. "
         "Верни ТОЛЬКО один валидный JSON-объект. Без markdown. Без текста вне JSON.\n\n"
-        "Схема JSON (строго соблюдать):\n"
+        "Схема JSON (строго соблюдать):\n и перед названием лекарства не пиши '1)'"
         "{\n"
         '  "ui_hints": {"summary": string, "severity": "low|medium|high", "need_doctor": boolean, "emergency": boolean},\n'
         '  "recommendations": [{"name": string, "dose": string, "how_to_take": string, "course": string, '

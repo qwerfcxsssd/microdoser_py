@@ -50,7 +50,6 @@ def _safe_list(x) -> list[str]:
 
 
 def _prune_to_single_recommendation(data: dict) -> dict:
-
     if not isinstance(data, dict):
         return data
 
@@ -74,7 +73,6 @@ def _prune_to_single_recommendation(data: dict) -> dict:
     return data
 
 def _ensure_min_calendar_event(data: dict, start_date: str | None) -> dict:
-
     if not isinstance(data, dict):
         return data
 
@@ -169,7 +167,7 @@ def _format_llm_json_ru(data: dict) -> str:
         interactions = _safe_list(r.get("interactions"))
 
         lines.append("")
-        lines.append(f"{idx}) {name}")
+        lines.append(f"{name}")
         if purpose:
             lines.append(f"   • Для чего: {purpose}")
         if dose:

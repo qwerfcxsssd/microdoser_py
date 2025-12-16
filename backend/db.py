@@ -13,7 +13,8 @@ def _project_root() -> str:
 
 
 def connect(db_path: str | None = None) -> sqlite3.Connection:
-
+    # локальная SQLite БД.
+    # по умолчанию кладём файл в корень проекта (рядом с main.py).
     if db_path is None:
         db_path = os.path.join(_project_root(), DB_FILENAME)
 
@@ -24,7 +25,7 @@ def connect(db_path: str | None = None) -> sqlite3.Connection:
 
 
 def init_db(conn: sqlite3.Connection) -> None:
-                                                                                
+    # инициализация и миграции БД
     conn.executescript(SCHEMA_V1_SQL)
 
                                            
