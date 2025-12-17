@@ -1,6 +1,0 @@
-{
-  "api_key": "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",
-  "model": "deepseek/deepseek-v3.2",
-  "max_tokens": 1200,
-  "language": "ru"
-}
