@@ -16,11 +16,11 @@ def create_search_button(parent, on_clicked):
             border: none;
         }
         QPushButton:hover {
-            background-color: rgba(255,255,255,40);
+            background-color: rgba(255,255,255,0);
             border-radius: 24px;
         }
         QPushButton:pressed {
-            background-color: rgba(255,255,255,16);
+            background-color: rgba(255,255,255,0);
             border-radius: 24px;
         }
     """)

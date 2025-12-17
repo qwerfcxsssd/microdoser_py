@@ -87,9 +87,9 @@ class MainWindow(QWidget):
         self.page_settings = SettingsScreen(self.font_semibold, self.font_circled, conn=self.conn)
 
         self.stacked.addWidget(self.page_home)
-        self.stacked.addWidget(self.page_settings)           
+        self.stacked.addWidget(self.page_settings)
 
-                                    
+
         self.reminders_panel = RemindersPanel(
             self.page_home,
             font_title=self.font_semibold,
@@ -108,33 +108,54 @@ class MainWindow(QWidget):
         self.calendar.setVisible(False)
         self.calendar.date_selected.connect(self.on_calendar_date_selected)
 
-                                          
-        self.month_out = QLabel(self.page_home)
-        self.month_out.setText(self.calendar.month_text())
-        self.month_out.setStyleSheet("""
-            QLabel {
-                background-color: rgba(255,255,255,160);
-                color: rgba(25,25,25,230);
-                border-radius: 18px;
-                padding-left: 18px;
-                padding-right: 18px;
-            }
-        """)
-        f = QFont(self.font_circled, 10)
-        f.setWeight(QFont.Weight.DemiBold)
-        self.month_out.setFont(f)
-        self.month_out.setFixedHeight(32)
-        self.month_out.adjustSize()
-        self.month_out.move(761, 53)
-        self.month_out.setStyleSheet(f"""
+        self.reminder_date_label = QLabel(self.page_home)
+        self.reminder_date_label.setStyleSheet(f"""
             QLabel {{
-                background-color: rgba(90, 90, 92, 220);   
-                color: rgba(255,255,255,235);
+                background-color: rgba(191,191,191,255); 
+                color: rgba(25,25,25,230);              
                 border-radius: 14px;
-                padding-left: 14px;
-                padding-right: 14px;
+                padding-left: 12px;
+                padding-right: 12px;
+                font-family: '{self.font_circled}';      
+                font-size: 18px;                        
+                font-weight: 555;                      
             }}
         """)
+
+        self.reminder_date_label.setFixedHeight(34)
+
+
+        from datetime import datetime
+        today_str = datetime.now().strftime("%d . %m . %Y")
+        self.reminder_date_label.setText(today_str)
+        self.reminder_date_label.adjustSize()
+
+        self.reminder_date_label.move(390, 53)
+        self.reminder_date_label.setVisible(False)
+
+
+        self.month_out = QLabel(self.page_home)
+
+
+        self.month_out.setStyleSheet(f"""
+            QLabel {{
+                background-color: rgba(191,191,191,255);
+                color: rgba(25,25,25,230);
+                border-radius: 14px;
+                padding-left: 9px;
+                padding-right: 9px;
+                font-family: '{self.font_circled}';
+                font-size: 16px;
+                font-weight: 1111;  
+            }}
+        """)
+
+        self.month_out.setText(self.calendar.month_text())
+
+        self.month_out.adjustSize()
+
+        self.month_out.setFixedHeight(32)
+        self.month_out.move(795, 53)
         self.month_out.setVisible(False)
 
                        
@@ -376,7 +397,7 @@ class MainWindow(QWidget):
             painter.setBrush(QBrush(QColor(255, 255, 255, 40)))
             painter.setPen(Qt.NoPen)
                                                      
-            painter.drawRoundedRect(375, 65, 998, 79, 30, 30)
+            painter.drawRoundedRect(384, 65, 998, 79, 16, 16)
 
         def draw_logo(x, y, text, icon_path):
             icon_size = int(30)
@@ -405,7 +426,7 @@ class MainWindow(QWidget):
                 text
             )
 
-        draw_logo(50, 75, "Micro Doser", "icons/pils.png")
+        draw_logo(50, 59, "Micro Doser", "icons/pils.png")
 
     def _set_home_ui_visible(self, visible: bool):
         self.search_input.setVisible(visible)
@@ -419,7 +440,7 @@ class MainWindow(QWidget):
         self.month_out.setVisible(visible)
 
         self.reminders_panel.setVisible(visible)
-
+        self.reminder_date_label.setVisible(visible)
         self.update()
 
                             
@@ -530,7 +551,9 @@ class MainWindow(QWidget):
                 )
                                    
             items.sort(key=lambda i: i.start_local)
-            self.reminders_panel.set_header_date(sd.toString("dd.MM.yyyy"))
+            date_str = sd.toString("dd.MM.yyyy")
+            self.reminder_date_label.setText(date_str)
+            self.reminder_date_label.adjustSize()
             self.reminders_panel.set_items(items)
         except Exception:
             import traceback

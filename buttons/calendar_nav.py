@@ -9,13 +9,13 @@ def create_calendar_nav_buttons(parent, on_prev=None, on_next=None):
         QPushButton {
             background: transparent;
             border: none;
-            border-radius: 20px;
+            border-radius: 16px;
         }
         QPushButton:hover {
-            background-color: rgba(255,255,255,40);
+            background-color: rgba(255,255,255,0);
         }
         QPushButton:pressed {
-            background-color: rgba(255,255,255,16);
+            background-color: rgba(255,255,255,0);
         }
     """
 
