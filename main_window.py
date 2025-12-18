@@ -155,7 +155,7 @@ class MainWindow(QWidget):
         self.month_out.adjustSize()
 
         self.month_out.setFixedHeight(32)
-        self.month_out.move(795, 53)
+        self.month_out.move(795, 54)
         self.month_out.setVisible(False)
 
                        
